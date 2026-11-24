@@ -42,11 +42,12 @@ function ContextMonitor({ onLoss }: { onLoss: () => void }) {
 function VillaLighting() {
   return (
     <>
-      <color attach="background" args={['#e7dfd3']} />
-      <ambientLight intensity={0.9} />
+      <color attach="background" args={['#e5ded1']} />
+      <hemisphereLight args={['#f0f4ff', '#b9a38a', 1.45]} />
       <directionalLight
-        position={[-18, 31, 15]}
-        intensity={2.2}
+        color="#fff1db"
+        position={[-19, 30, 15]}
+        intensity={2}
         castShadow
         shadow-mapSize={[1536, 1536]}
         shadow-camera-left={-18}
@@ -55,7 +56,10 @@ function VillaLighting() {
         shadow-camera-bottom={-18}
         shadow-camera-near={0.5}
         shadow-camera-far={65}
-        shadow-normalBias={0.045}
+        shadow-bias={-0.00012}
+        shadow-normalBias={0.035}
+        shadow-intensity={0.87}
+        shadow-radius={2.6}
       />
     </>
   )

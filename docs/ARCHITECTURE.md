@@ -4,6 +4,8 @@
 
 `src/VillaBlockout.tsx` is the replaceable model. Its root contains named Site, Foundation, Walls, Columns, Roof, Glazing, Timber screening, Terrace, and Pool groups. X spans the long façade, +Y is up, and +Z faces the terrace and pool. One world unit is approximately one meter. The site surface is Y=0 and the origin is at its center. Wall segments leave physical openings for the glazing. The upper site extrusion has a rectangular cutout above a continuous base so the pool reads as recessed.
 
+`src/VillaMaterials.ts` owns the shared standard materials for the model and disposes them with it. `src/TropicalLandscape.tsx` populates the existing beds using fixed placement and four instanced meshes for trunks, fronds, shrubs, and grass. The scene uses warm directional daylight and hemisphere fill with one shadow map. Glazing is a single translucent surface per pane, and the pool uses an opaque, static water surface.
+
 ## Planned experience
 
 - **Interface** — Semantic React DOM owns editorial content, navigation, controls, and fallback. One persistent React Three Fiber canvas renders the architectural scene alongside it.
