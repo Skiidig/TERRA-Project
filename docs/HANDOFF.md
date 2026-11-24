@@ -1,5 +1,21 @@
 # Handoff
 
+## TERRA-008 · Performance optimization, regression QA, and release candidate
+
+Profiled the production build (`vite preview` on `http://localhost:4173/`) using isolated Microsoft Edge Headless over CDP (`ANGLE NVIDIA GeForce RTX 4060 Direct3D11`), audited the production JS bundle and technical debt, applied one targeted rendering optimization, and completed all deferred fault-injection and media-emulation QA checks.
+
+- **Targeted Optimization**: Replaced the 8 separate terrace limestone paver meshes in `src/VillaBlockout.tsx` with a single `InstancedMesh` (`TerracePavers`), cutting draw calls from `90` to `83` (`-7` / `-7.8%`) and geometries by `7` with identical visual output.
+- **Bundle & Technical Debt Decisions**:
+  - Production JS is `1,320.51 kB` minified / `381.16 kB` gzip (`three` 58.7%, `react-dom` 18.2%, `gsap` 10.4%, `@react-three/fiber` 8.6%, `src/` 1.7%, `three-stdlib` 1.0%, `@react-three/drei` 0.1%). Tree-shaking is effective with zero duplicate packages; artificial chunk splitting does not reduce initial transfer and lazy-loading GSAP risks deep-link/ScrollTrigger races, so the single clean bundle is retained.
+  - `THREE.Clock` deprecation warning originates upstream in `@react-three/fiber@9.8.2` (`events-e51d7528.esm.js:1207`); documented and deferred.
+  - `skipLibCheck: true` remains required due to two transitive `three-stdlib` declaration incompatibilities (`SVGLoader.d.ts`, `TGALoader.d.ts`) against `@types/three@0.187.0`; application strictness is unaffected.
+- **Measured Performance (`1152 × 920` DPR 1 `653 × 786` & `1440 × 900` DPR 1, RTX 4060 ANGLE D3D11)**:
+  - Draw calls / triangles (including shadow pass): `83` / `14,688` (well below `< 100` calls and `150,000` triangle ceilings).
+  - Settled idle frames (`500 ms` initial & `400 ms` post-scroll): `0`. Long tasks (`> 50 ms`): `0`.
+  - Scroll CPU duration (`1440 × 900`): median `1.10 ms`, p95 `1.60 ms`. Explore drag + damping (`104` frames): CPU median `0.65 ms`, p95 `0.90 ms`; render-start interval median `5.5 ms`, p95 `5.8 ms`.
+  - Mobile DPR capping confirmed (`390×844` DPR 2 → `585×396` buffer = `1.5×`). CSS `3.32 kB` gzip; self-hosted WOFF2 fonts `85,832 B`; `0` external network requests.
+- **Regression & Deferred QA**: Passed across `1440×900`, `1152×920`, `1024×768`, `1023×768` (breakpoint), `768×1024`, `667×375` (mobile landscape), `390×844`, and `320×568` (0 overflow, 1 persistent `<canvas>`, all 3 local fonts loaded). Live CDP verification passed for **WebGL init failure** (`getContext -> null`), **runtime `WEBGL_lose_context`** during Explore Mode, and **`prefers-reduced-motion: reduce`** with dynamic toggle back to `no-preference`. Physical iOS Safari / Android Chrome devices were not available and remain pending manual release checks.
+
 ## TERRA-007 · Architectural visual refinement
 
 Targeted visual refinement pass informed by live multi-viewport browser inspection of the TERRA-006 baseline. Camera ownership, ScrollTrigger lifecycle, OrbitControls handoff, reduced-motion behavior, and WebGL fallback code (`src/cinematicCamera.ts`, `src/SceneViewport.tsx`, `src/App.tsx`) were preserved unchanged.
@@ -110,4 +126,4 @@ Fiber and Drei bring in Zustand transitively. TERRA has no direct dependency on 
 
 ## Next task
 
-TERRA-008 performs full performance measurement (`renderer.info` draw calls/triangles after TERRA-007 scene additions, desktop/mobile frame profiling, bundle review) and end-to-end QA including reduced-motion media emulation, WebGL init/context-loss fault injection, and physical mobile verification. Start after explicit approval.
+TERRA-009 handles portfolio release preparation, final physical mobile spot-check (iOS Safari / Android Chrome), and deployment authorization. Start after explicit approval.

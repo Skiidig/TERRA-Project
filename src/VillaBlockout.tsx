@@ -130,6 +130,32 @@ function GlazedOpening({ position, rotation = 0, width, height, bays, materials 
   )
 }
 
+function TerracePavers({ material }: { material: MeshStandardMaterial }) {
+  const pavers = useRef<InstancedMesh>(null)
+  const count = 8
+  const paverWidth = villa.width / count
+
+  useLayoutEffect(() => {
+    const mesh = pavers.current
+    if (!mesh) return
+
+    const part = new Object3D()
+    for (let i = 0; i < count; i += 1) {
+      part.position.set(-halfWidth + (i + 0.5) * paverWidth, terraceHeight + 0.0125, villa.front + terraceDepth / 2)
+      part.updateMatrix()
+      mesh.setMatrixAt(i, part.matrix)
+    }
+    mesh.instanceMatrix.needsUpdate = true
+    mesh.computeBoundingSphere()
+  }, [paverWidth])
+
+  return (
+    <instancedMesh name="Limestone pavers" ref={pavers} args={[undefined, material, count]} receiveShadow>
+      <boxGeometry args={[paverWidth - 0.045, 0.025, terraceDepth - 0.045]} />
+    </instancedMesh>
+  )
+}
+
 function TimberScreen({ material }: { material: MeshStandardMaterial }) {
   const slats = useRef<InstancedMesh>(null)
   const count = 13
@@ -299,11 +325,7 @@ export function VillaBlockout() {
         <Block size={[frontOpening.right - frontOpening.left, 0.065, 0.42]}
           position={[(frontOpening.left + frontOpening.right) / 2, terraceHeight + 0.045, villa.front + 0.21]}
           material={materials.limestone} castShadow={false} />
-        {Array.from({ length: 8 }, (_, i) => (
-          <Block key={i} size={[villa.width / 8 - 0.045, 0.025, terraceDepth - 0.045]}
-            position={[-halfWidth + (i + 0.5) * villa.width / 8, terraceHeight + 0.0125, villa.front + terraceDepth / 2]}
-            material={materials.limestone} castShadow={false} />
-        ))}
+        <TerracePavers material={materials.limestone} />
       </group>
       <Pool materials={materials} />
     </group>
