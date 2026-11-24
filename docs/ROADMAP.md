@@ -11,6 +11,6 @@
 | TERRA-006 | Cinematic experience (complete) |
 | TERRA-007 | Visual refinement (complete) |
 | TERRA-008 | Performance and QA (complete) |
-| TERRA-009 | Portfolio release (prep complete — awaiting push & deploy approval) |
+| TERRA-009 | Portfolio release (complete) |
 
 Advanced features are deferred until after the MVP. See the [project brief](PROJECT_BRIEF.md) for scope.

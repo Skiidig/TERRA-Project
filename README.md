@@ -2,6 +2,8 @@
 
 **An Immersive Architectural Experience** — *Where architecture meets nature.*
 
+**Live Production**: [https://terra-project-six.vercel.app](https://terra-project-six.vercel.app)
+
 TERRA is an independent conceptual architectural visualization and interactive web portfolio experiment. It presents a single-story tropical modern pavilion as a calm digital architectural monograph integrated with a real-time procedural WebGL 2 diorama.
 
 ## Architectural Concept

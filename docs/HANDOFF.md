@@ -1,14 +1,14 @@
 # Handoff
 
-## TERRA-009 · Portfolio release preparation (awaiting push & deploy approval)
+## TERRA-009 · Portfolio release (complete)
 
-Prepared TERRA for portfolio release without adding new features or changing dependencies.
+Deployed TERRA MVP to Vercel via GitHub integration (`https://github.com/Skiidig/TERRA-Project.git` → `https://terra-project-six.vercel.app`) and verified the live HTTPS production deployment.
 
 - **Clean Install & Reproducibility**: Verified in an isolated temporary clone (`git clone --no-hardlinks`) on Node.js `v26.13.1` and npm `11.20.0`. `npm ci` installed 217 packages (`0` vulnerabilities, expected `esbuild@0.28.2` `allowScripts` warning), followed by passing `npm run typecheck`, `npm run lint`, and `npm run build` (`3.42 s`) with zero modifications to `package-lock.json`.
-- **Vercel Compatibility**: Official Vercel docs confirm Node.js `26.x` is supported and selected automatically from `package.json` `engines.node` (`>=26 <27`). Vercel's `Vite` preset auto-detects `npm run build` and `dist/`; no `vercel.json` is needed for this single-page hash-anchored site.
-- **Metadata & Portfolio README**: Added architectural SVG favicon (`public/favicon.svg`), release title (`TERRA — An Immersive Architectural Experience`), `theme-color` (`#f4f1ea`), Open Graph and Twitter summary metadata in `index.html` (no fabricated canonical URLs), and finalized `README.md` with verified facts, font OFL 1.1 attribution, performance summary, limitations, and Vercel deployment settings.
-- **Final Local Production Smoke Test**: Verified on `vite preview` (`http://localhost:4173/`) via isolated Edge Headless CDP: fresh deep link (`/#materials` → `03 / Material & Texture`), reload at nonzero scroll (`scrollY: 900` → `02 / Shelter & Shade`), forward/backward 4-chapter scroll, Explore Mode orbit/zoom/reset/rapid re-entry/Escape focus restoration, mobile portrait (`390 × 844`) & landscape (`667 × 375`) touch emulation, `/favicon.svg` HTTP 200, `3/3` local fonts loaded, `prefers-reduced-motion: reduce`, runtime `WEBGL_lose_context`, WebGL init failure (`getContext -> null`), `0` external requests, and `0` normal console errors.
-- **Pending Release Actions**: Physical iOS Safari / Android Chrome manual spot-check (local-network preview procedure documented in release report), explicit user approval to push `main` to `origin` (`https://github.com/Skiidig/TERRA-Project.git`), Vercel deployment, and post-deploy production URL / canonical metadata verification.
+- **Vercel Deployment**: Auto-detected `Vite` preset (`npm run build`, `dist/`, Node.js `26.x` from `package.json` `engines.node`, production branch `main`, no environment variables or `vercel.json`).
+- **Release Metadata & Documentation**: Added architectural SVG favicon (`public/favicon.svg`), canonical URL (`https://terra-project-six.vercel.app/`), Open Graph (`og:url`, `og:title`, `og:description`) and Twitter summary metadata in `index.html`, and finalized `README.md` with the live production link, verified metrics, SIL OFL 1.1 font attribution, and limitations.
+- **Live HTTPS Production Smoke Test (`https://terra-project-six.vercel.app/`)**: Verified via isolated Edge Headless CDP: HTTP `200`, `/favicon.svg` HTTP `200`, fresh deep link (`/#materials` → `scrollY: 1312`, `03 / Material & Texture`), all 4 desktop chapters (`01` → `04`), Explore Mode entry/controls/`Escape` focus restoration, mobile portrait (`390 × 844`, `0` overflow, `touch-action: pan-y`), `3/3` local fonts loaded, `prefers-reduced-motion: reduce`, runtime `WEBGL_lose_context` fallback, WebGL init-failure fallback, `0` external runtime requests, and `0` normal console errors.
+- **Remaining Limitations**: Real physical Android Chrome and iOS Safari testing and dedicated GPU/device FPS measurements remain unverified (deployment proceeded with explicit user acknowledgment).
 
 ## TERRA-008 · Performance optimization, regression QA, and release candidate
 
@@ -134,6 +134,6 @@ Strict engine and peer installation, the full npm tree check, type checking, ESL
 
 Fiber and Drei bring in Zustand transitively. TERRA has no direct dependency on it. npm flagged the esbuild postinstall as uncovered by its script allowlist. The build passed on this host. Verify a clean install on the eventual CI or deployment runner and confirm Node 26 support there if the platform builds from source.
 
-## Next task
+## Status
 
-Awaiting explicit user approval for Git push (`origin/main`), Vercel deployment, live production URL smoke test, and final release sign-off.
+TERRA MVP is complete and deployed at `https://terra-project-six.vercel.app`. Post-MVP features (GLB/glTF replacement, interior walkthroughs, alternate lighting) remain deferred per `docs/PROJECT_BRIEF.md`.
