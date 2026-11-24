@@ -2,7 +2,7 @@
 
 Where architecture meets nature.
 
-TERRA is a portfolio and educational project exploring a tropical modern villa through editorial content and an interactive 3D diorama. The current application contains a primitive 3D test scene.
+TERRA is a portfolio and educational project exploring a tropical modern villa through editorial content and an interactive 3D diorama. The current application shows the procedural villa blockout.
 
 ## Local development
 

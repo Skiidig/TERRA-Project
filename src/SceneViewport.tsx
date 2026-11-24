@@ -3,6 +3,7 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { Component, useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { ComponentRef } from 'react'
+import { VillaBlockout } from './VillaBlockout'
 
 type Orbit = ComponentRef<typeof OrbitControls>
 
@@ -38,36 +39,24 @@ function ContextMonitor({ onLoss }: { onLoss: () => void }) {
   return null
 }
 
-function TestScene() {
+function VillaLighting() {
   return (
     <>
       <color attach="background" args={['#e7dfd3']} />
-      <ambientLight intensity={0.65} />
+      <ambientLight intensity={0.9} />
       <directionalLight
-        position={[-3, 7, 4]}
-        intensity={2.3}
+        position={[-18, 31, 15]}
+        intensity={2.2}
         castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-camera-left={-5}
-        shadow-camera-right={5}
-        shadow-camera-top={5}
-        shadow-camera-bottom={-5}
+        shadow-mapSize={[1536, 1536]}
+        shadow-camera-left={-18}
+        shadow-camera-right={18}
+        shadow-camera-top={18}
+        shadow-camera-bottom={-18}
         shadow-camera-near={0.5}
-        shadow-camera-far={16}
-        shadow-normalBias={0.025}
+        shadow-camera-far={65}
+        shadow-normalBias={0.045}
       />
-      <mesh position={[0, -0.15, 0]} receiveShadow>
-        <boxGeometry args={[6, 0.3, 4]} />
-        <meshStandardMaterial color="#a79781" roughness={0.9} />
-      </mesh>
-      <mesh position={[-0.85, 0.72, 0]} castShadow receiveShadow>
-        <boxGeometry args={[2.4, 1.44, 1.6]} />
-        <meshStandardMaterial color="#d4c4ac" roughness={0.78} />
-      </mesh>
-      <mesh position={[1.32, 0.58, 0.55]} castShadow receiveShadow>
-        <sphereGeometry args={[0.58, 24, 16]} />
-        <meshStandardMaterial color="#84664e" roughness={0.45} />
-      </mesh>
     </>
   )
 }
@@ -97,9 +86,9 @@ export function SceneViewport() {
 
   return (
     <section aria-labelledby="scene-heading">
-      <h2 id="scene-heading">3D test scene</h2>
+      <h2 id="scene-heading">Tropical Modern Villa</h2>
       <p id="scene-description">
-        A rectangular platform, box, and sphere under directional light.
+        A single-story villa with a flat roof, glazed walls, a shaded terrace, and a pool.
         Drag to orbit. Scroll over the scene or pinch to zoom.
       </p>
       <div className="scene-viewport" aria-describedby="scene-description">
@@ -107,22 +96,23 @@ export function SceneViewport() {
           <SceneBoundary>
             <Canvas
               aria-hidden="true"
-              camera={{ position: [6, 4.5, 7], fov: 44, near: 0.1, far: 50 }}
+              camera={{ position: [23, 18, 28], fov: 37, near: 0.5, far: 120 }}
               dpr={[1, 1.5]}
               frameloop="demand"
               gl={{ alpha: false, antialias: true, powerPreference: 'default' }}
               shadows="percentage"
             >
               <ContextMonitor onLoss={handleContextLoss} />
-              <TestScene />
+              <VillaLighting />
+              <VillaBlockout />
               <OrbitControls
                 ref={bindOrbit}
-                target={[0, 0.55, 0]}
+                target={[0, 0.9, 0]}
                 enableDamping
                 dampingFactor={0.12}
                 enablePan={false}
-                minDistance={5}
-                maxDistance={15}
+                minDistance={18}
+                maxDistance={62}
                 minPolarAngle={0.2}
                 maxPolarAngle={1.48}
               />

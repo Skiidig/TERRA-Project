@@ -1,6 +1,8 @@
 # Architecture
 
-`src/main.tsx` owns the semantic shell. `src/SceneViewport.tsx` owns one responsive Canvas, the primitive test scene, OrbitControls, and the fallback. The Canvas renders on demand, with Drei invalidating on camera changes. OrbitControls owns the camera and saves its initial position and target for the DOM reset button. WebGL initialization errors and context loss replace the viewport with a status message and leave the shell intact.
+`src/main.tsx` owns the semantic shell. `src/SceneViewport.tsx` owns one responsive Canvas, scene lighting, OrbitControls, and the fallback. The Canvas renders on demand, with Drei invalidating on camera changes. OrbitControls owns the camera and saves its initial position and target for the DOM reset button. WebGL initialization errors and context loss replace the viewport with a status message and leave the shell intact.
+
+`src/VillaBlockout.tsx` is the replaceable model. Its root contains named Site, Foundation, Walls, Columns, Roof, Glazing, Timber screening, Terrace, and Pool groups. X spans the long façade, +Y is up, and +Z faces the terrace and pool. One world unit is approximately one meter. The site surface is Y=0 and the origin is at its center. Wall segments leave physical openings for the glazing. The upper site extrusion has a rectangular cutout above a continuous base so the pool reads as recessed.
 
 ## Planned experience
 
