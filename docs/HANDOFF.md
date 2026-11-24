@@ -1,5 +1,15 @@
 # Handoff
 
+## TERRA-009 · Portfolio release preparation (awaiting push & deploy approval)
+
+Prepared TERRA for portfolio release without adding new features or changing dependencies.
+
+- **Clean Install & Reproducibility**: Verified in an isolated temporary clone (`git clone --no-hardlinks`) on Node.js `v26.13.1` and npm `11.20.0`. `npm ci` installed 217 packages (`0` vulnerabilities, expected `esbuild@0.28.2` `allowScripts` warning), followed by passing `npm run typecheck`, `npm run lint`, and `npm run build` (`3.42 s`) with zero modifications to `package-lock.json`.
+- **Vercel Compatibility**: Official Vercel docs confirm Node.js `26.x` is supported and selected automatically from `package.json` `engines.node` (`>=26 <27`). Vercel's `Vite` preset auto-detects `npm run build` and `dist/`; no `vercel.json` is needed for this single-page hash-anchored site.
+- **Metadata & Portfolio README**: Added architectural SVG favicon (`public/favicon.svg`), release title (`TERRA — An Immersive Architectural Experience`), `theme-color` (`#f4f1ea`), Open Graph and Twitter summary metadata in `index.html` (no fabricated canonical URLs), and finalized `README.md` with verified facts, font OFL 1.1 attribution, performance summary, limitations, and Vercel deployment settings.
+- **Final Local Production Smoke Test**: Verified on `vite preview` (`http://localhost:4173/`) via isolated Edge Headless CDP: fresh deep link (`/#materials` → `03 / Material & Texture`), reload at nonzero scroll (`scrollY: 900` → `02 / Shelter & Shade`), forward/backward 4-chapter scroll, Explore Mode orbit/zoom/reset/rapid re-entry/Escape focus restoration, mobile portrait (`390 × 844`) & landscape (`667 × 375`) touch emulation, `/favicon.svg` HTTP 200, `3/3` local fonts loaded, `prefers-reduced-motion: reduce`, runtime `WEBGL_lose_context`, WebGL init failure (`getContext -> null`), `0` external requests, and `0` normal console errors.
+- **Pending Release Actions**: Physical iOS Safari / Android Chrome manual spot-check (local-network preview procedure documented in release report), explicit user approval to push `main` to `origin` (`https://github.com/Skiidig/TERRA-Project.git`), Vercel deployment, and post-deploy production URL / canonical metadata verification.
+
 ## TERRA-008 · Performance optimization, regression QA, and release candidate
 
 Profiled the production build (`vite preview` on `http://localhost:4173/`) using isolated Microsoft Edge Headless over CDP (`ANGLE NVIDIA GeForce RTX 4060 Direct3D11`), audited the production JS bundle and technical debt, applied one targeted rendering optimization, and completed all deferred fault-injection and media-emulation QA checks.
@@ -126,4 +136,4 @@ Fiber and Drei bring in Zustand transitively. TERRA has no direct dependency on 
 
 ## Next task
 
-TERRA-009 handles portfolio release preparation, final physical mobile spot-check (iOS Safari / Android Chrome), and deployment authorization. Start after explicit approval.
+Awaiting explicit user approval for Git push (`origin/main`), Vercel deployment, live production URL smoke test, and final release sign-off.
