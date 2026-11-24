@@ -64,6 +64,8 @@ function Site({ materials }: { materials: VillaMaterials }) {
 
   return (
     <group name="Site">
+      <Block size={[site.width - 0.55, 0.14, site.depth - 0.55]}
+        position={[0, -site.thickness - 0.07, 0]} material={materials.plinthBase} castShadow={false} />
       <Block size={[site.width, site.thickness + pool.base, site.depth]}
         position={[0, (pool.base - site.thickness) / 2, 0]} material={materials.ground} castShadow={false} />
       <mesh position={[0, pool.base, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.ground} receiveShadow>
@@ -170,9 +172,63 @@ function Pool({ materials }: { materials: VillaMaterials }) {
           <Block size={[liner, -pool.base, pool.depth - 2 * liner]} position={[side * (pool.width - liner) / 2, pool.base / 2, 0]} material={materials.basin} castShadow={false} />
         </group>
       ))}
+      <Block size={[1.15, 0.14, 1.35]} position={[-pool.width / 2 + 0.62, pool.base + 0.07, -pool.depth / 2 + 0.72]} material={materials.basin} castShadow={false} />
       <mesh name="Static water" position={[0, -0.19, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.water} receiveShadow>
         <planeGeometry args={[pool.width - 2 * liner, pool.depth - 2 * liner]} />
       </mesh>
+    </group>
+  )
+}
+
+// Restrained architectural silhouettes inside the pavilion for depth behind glazing.
+function Interior({ materials }: { materials: VillaMaterials }) {
+  const timberPieces = useRef<InstancedMesh>(null)
+  const linenPieces = useRef<InstancedMesh>(null)
+  const y0 = villa.floorHeight
+
+  useLayoutEffect(() => {
+    const wood = timberPieces.current
+    const fabric = linenPieces.current
+    if (!wood || !fabric) return
+
+    const part = new Object3D()
+    const place = (mesh: InstancedMesh, index: number, pos: Vector3Tuple, scale: Vector3Tuple) => {
+      part.position.set(...pos)
+      part.scale.set(...scale)
+      part.updateMatrix()
+      mesh.setMatrixAt(index, part.matrix)
+    }
+
+    // Credenza along rear wall, dining table top, low lounge platform, and coffee table.
+    place(wood, 0, [-0.3, y0 + 0.36, -6.25], [4.4, 0.72, 0.56])
+    place(wood, 1, [-2.75, y0 + 0.73, -3.05], [2.45, 0.07, 1.05])
+    place(wood, 2, [-3.65, y0 + 0.35, -3.05], [0.1, 0.7, 0.85])
+    place(wood, 3, [-1.85, y0 + 0.35, -3.05], [0.1, 0.7, 0.85])
+    place(wood, 4, [2.75, y0 + 0.16, -3.45], [3.4, 0.32, 1.15])
+    place(wood, 5, [2.75, y0 + 0.16, -1.7], [1.45, 0.32, 0.78])
+
+    // Low sofa seat & backrest cushions in warm linen.
+    place(fabric, 0, [2.75, y0 + 0.42, -3.38], [3.15, 0.22, 0.92])
+    place(fabric, 1, [2.75, y0 + 0.66, -3.86], [3.15, 0.34, 0.22])
+
+    wood.instanceMatrix.needsUpdate = true
+    wood.computeBoundingSphere()
+    fabric.instanceMatrix.needsUpdate = true
+    fabric.computeBoundingSphere()
+  }, [y0])
+
+  return (
+    <group name="Interior">
+      <Block size={[villa.width - 0.5, 0.02, villa.depth - 0.5]}
+        position={[0, y0 + 0.01, centerZ]} material={materials.interiorFloor} castShadow={false} />
+      <Block size={[0.18, villa.clearHeight, 3.1]}
+        position={[-5.1, wallCenter, -4.85]} material={materials.concrete} />
+      <instancedMesh name="Interior timber furnishings" ref={timberPieces} args={[undefined, materials.timber, 6]} castShadow receiveShadow>
+        <boxGeometry />
+      </instancedMesh>
+      <instancedMesh name="Interior lounge cushions" ref={linenPieces} args={[undefined, materials.interiorLinen, 2]} castShadow receiveShadow>
+        <boxGeometry />
+      </instancedMesh>
     </group>
   )
 }
@@ -236,11 +292,15 @@ export function VillaBlockout() {
       <group name="Timber screening">
         <TimberScreen material={materials.timber} />
       </group>
+      <Interior materials={materials} />
       <group name="Terrace">
         <Block size={[villa.width, terraceHeight, terraceDepth]}
           position={[0, terraceHeight / 2, villa.front + terraceDepth / 2]} material={materials.slab} />
+        <Block size={[frontOpening.right - frontOpening.left, 0.065, 0.42]}
+          position={[(frontOpening.left + frontOpening.right) / 2, terraceHeight + 0.045, villa.front + 0.21]}
+          material={materials.limestone} castShadow={false} />
         {Array.from({ length: 8 }, (_, i) => (
-          <Block key={i} size={[villa.width / 8 - 0.035, 0.025, terraceDepth - 0.035]}
+          <Block key={i} size={[villa.width / 8 - 0.045, 0.025, terraceDepth - 0.045]}
             position={[-halfWidth + (i + 0.5) * villa.width / 8, terraceHeight + 0.0125, villa.front + terraceDepth / 2]}
             material={materials.limestone} castShadow={false} />
         ))}

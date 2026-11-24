@@ -1,5 +1,19 @@
 # Handoff
 
+## TERRA-007 · Architectural visual refinement
+
+Targeted visual refinement pass informed by live multi-viewport browser inspection of the TERRA-006 baseline. Camera ownership, ScrollTrigger lifecycle, OrbitControls handoff, reduced-motion behavior, and WebGL fallback code (`src/cinematicCamera.ts`, `src/SceneViewport.tsx`, `src/App.tsx`) were preserved unchanged.
+
+- **Initial Findings Addressed**:
+  - **P1 Sticky Stage Void**: On desktop (`1440 × 900`), the sticky left stage previously stopped ~189 px above the viewport bottom, leaving empty cream space beneath the stage bar. `.story-layout > .stage-section` now fills `calc(100svh - var(--header-height))` as a flex column with `.scene-viewport { flex: 1 1 auto; }`.
+  - **P1 Empty Interior Behind Glazing**: Close-up views (Chapter 3 `Material & Texture` and Explore Mode) revealed an empty box behind the 5-bay glazing. Added `<group name="Interior">` in `src/VillaBlockout.tsx` with restrained instanced silhouettes (rear credenza, dining table, lounge platform, linen cushions, interior floor slab, and a concrete divider) reusing shared standard materials.
+  - **P2 Grounding, Junctions & Material Separation**: Added a recessed plinth base skirt (`plinthBase`) beneath the 24 × 18 m site platform, a limestone threshold step between the interior slab and terrace, a corner pool entry step, slightly wider terrace paver joints (`0.045 m`), and refined tonal contrast in `src/VillaMaterials.ts`.
+  - **P2 Vegetation Silhouettes**: Upgraded `src/TropicalLandscape.tsx` within the existing 4 instanced meshes (0 extra draw calls) to 3-lobe organic shrub clusters (42 instances) and fuller 12-frond palm crowns (36 instances).
+  - **P2 Hero & Stage Bar Ergonomics**: Tightened hero vertical padding and converted the desktop `.story-layout .stage-bar-inner` to a compact horizontal row so the Browse bar stays single-line and all 6 Explore controls fit on one row without wrapping.
+- **Rejected / Deferred**: Chapter camera coordinates in `src/cinematicCamera.ts` were kept unchanged (preserving the verified ScrollTrigger choreography and intentional Chapter 3 material-detail framing). External textures, HDRIs, animated water, shaders, and postprocessing remain out of MVP scope.
+- **Verification & Performance**: `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check` passed; `package.json` and `package-lock.json` are unchanged. Production JS is `1,320.18 kB` minified / `381.12 kB` gzip (+0.48 kB gzip vs TERRA-006); CSS is `13.93 kB` minified / `3.32 kB` gzip; self-hosted fonts remain `85,832 B`. Browser verification passed at `1440 × 900`, `1024 × 768`, `768 × 1024`, `390 × 844`, and `320 × 568` (0 console errors, 0 external requests, 0 horizontal overflow, single persistent `<canvas>`, forward/backward chapter scroll, anchor navigation, Browse wheel scroll, Explore orbit/rotate/zoom/reset/Escape focus restoration, and unclipped framing).
+- **Deferred to TERRA-008**: Runtime `renderer.info` draw-call/triangle verification (estimated ~88 draw calls / ~11.5k triangles after adding `Interior`, plinth skirt, threshold step, and pool corner step), live `prefers-reduced-motion` media emulation, WebGL init-failure / `WEBGL_lose_context` fault injection (unchanged since TERRA-006; unavailable in `webview_browser` sandbox), and physical mobile touch/GPU profiling.
+
 ## TERRA-006 · Cinematic experience
 
 The monograph now has a sticky stage beside the narrative at 1024 × 650 CSS px or larger. A single ScrollTrigger reads native scroll on the existing section anchors. It holds each composition before easing into the next over at most 360 px. Smaller viewports and reduced-motion users get a static Arrival shot and can still explore manually. Arrival is visible immediately.
@@ -96,4 +110,4 @@ Fiber and Drei bring in Zustand transitively. TERRA has no direct dependency on 
 
 ## Next task
 
-TERRA-007 reviews and refines the approved visuals and chapter presentation. Start after explicit approval.
+TERRA-008 performs full performance measurement (`renderer.info` draw calls/triangles after TERRA-007 scene additions, desktop/mobile frame profiling, bundle review) and end-to-end QA including reduced-motion media emulation, WebGL init/context-loss fault injection, and physical mobile verification. Start after explicit approval.

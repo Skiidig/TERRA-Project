@@ -60,11 +60,12 @@ const grassVertices = new Float32Array([
   -0.045, 0, 0, 0.049, 0.6, 0.055, -0.017, 0.6, 0.055,
   -0.017, 0.6, 0.055, 0.049, 0.6, 0.055, 0.072, 1, 0.29,
 ])
-const frondColors = ['#64764d', '#748451', '#84915e', '#536646']
-const shrubColors = ['#687758', '#75815e', '#536747']
-const grassColors = ['#9a9b70', '#8b9462', '#788354']
+const frondColors = ['#5e7147', '#6f804e', '#808e5b', '#4d6141']
+const shrubColors = ['#637353', '#717e5a', '#4f6343', '#5c6d4c']
+const grassColors = ['#96986c', '#86905e', '#748050']
 const bladesPerTuft = 9
-const frondsPerPalm = 10
+const frondsPerPalm = 12
+const lobesPerShrub = 3
 
 export function TropicalLandscape({ materials }: { materials: VillaMaterials }) {
   const trunks = useRef<InstancedMesh>(null)
@@ -98,18 +99,30 @@ export function TropicalLandscape({ materials }: { materials: VillaMaterials }) 
       place(trunkMesh, i, [(x + crownX) / 2, bedTop + height * Math.cos(lean) / 2, z],
         [0, 0, -lean], [1, height, 1])
       for (let j = 0; j < frondsPerPalm; j += 1) {
-        const upright = j >= 7
-        const reach = crown * (upright ? 0.69 : 0.90 + ((j * 3) % 5) * 0.043)
+        const upright = j >= 8
+        const reach = crown * (upright ? 0.68 : 0.88 + ((j * 3) % 5) * 0.045)
         place(frondMesh, i * frondsPerPalm + j,
           [crownX, bedTop + height * Math.cos(lean), z],
-          [0, phase + j * 2.39996, upright ? 0.52 : 0.09 - (j % 3) * 0.115],
+          [0, phase + j * 2.39996, upright ? 0.54 : 0.11 - (j % 3) * 0.125],
           [reach, reach, reach], frondColors[(i + j) % frondColors.length])
       }
     }
 
     for (const [i, [x, z, size]] of shrubs.entries()) {
-      place(shrubsMesh, i, [x, bedTop + size * 0.39, z], [0, i * 0.7, 0],
-        [size, size * 0.48, size * 0.73], shrubColors[i % shrubColors.length])
+      for (let lobe = 0; lobe < lobesPerShrub; lobe += 1) {
+        const angle = i * 1.15 + lobe * 2.094
+        const offset = lobe === 0 ? 0 : size * 0.34
+        const scale = lobe === 0 ? 1 : 0.72 - (lobe - 1) * 0.1
+        const heightScale = lobe === 0 ? 0.52 : 0.44
+        place(
+          shrubsMesh,
+          i * lobesPerShrub + lobe,
+          [x + Math.cos(angle) * offset, bedTop + size * scale * 0.36, z + Math.sin(angle) * offset],
+          [0, angle, 0],
+          [size * scale, size * scale * heightScale, size * scale * 0.82],
+          shrubColors[(i + lobe) % shrubColors.length],
+        )
+      }
     }
 
     for (const [i, [x, z, height]] of grassTufts.entries()) {
@@ -140,7 +153,7 @@ export function TropicalLandscape({ materials }: { materials: VillaMaterials }) 
           <bufferAttribute attach="attributes-position" args={[frondVertices, 3]} />
         </bufferGeometry>
       </instancedMesh>
-      <instancedMesh name="Low shrubs" ref={shrubMesh} args={[undefined, materials.shrub, shrubs.length]} castShadow receiveShadow>
+      <instancedMesh name="Low shrubs" ref={shrubMesh} args={[undefined, materials.shrub, shrubs.length * lobesPerShrub]} castShadow receiveShadow>
         <icosahedronGeometry args={[1, 1]} />
       </instancedMesh>
       <instancedMesh name="Grass tufts" ref={grass} args={[undefined, materials.grass, grassTufts.length * bladesPerTuft]} receiveShadow>
