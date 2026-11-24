@@ -12,7 +12,44 @@ body {
 }
 
 main {
-  max-width: 40rem;
+  max-width: 64rem;
   margin-inline: auto;
-  padding: 4rem 1.5rem;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+
+.scene-viewport {
+  display: grid;
+  min-width: 0;
+  height: clamp(14rem, 52vw, 32rem);
+  overflow: hidden;
+  background: #e7dfd3;
+  color: #29231d;
+  border-radius: 0.5rem;
+}
+
+.scene-fallback {
+  align-self: center;
+  max-width: 34ch;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+button {
+  margin-block-start: 0.75rem;
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  border: 1px solid currentColor;
+  border-radius: 0.35rem;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+button:disabled {
+  opacity: 0.55;
 }

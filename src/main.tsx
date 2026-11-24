@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { SceneViewport } from './SceneViewport'
 import './style.css'
 
 createRoot(document.getElementById('root')!).render(
@@ -7,7 +8,7 @@ createRoot(document.getElementById('root')!).render(
     <main>
       <h1>TERRA</h1>
       <p>Where architecture meets nature.</p>
-      <p>The project foundation is initialized.</p>
+      <SceneViewport />
     </main>
   </StrictMode>,
 )
