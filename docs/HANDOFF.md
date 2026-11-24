@@ -1,5 +1,22 @@
 # Handoff
 
+## TERRA-006 · Cinematic experience
+
+The monograph now has a sticky stage beside the narrative at 1024 × 650 CSS px or larger. A single ScrollTrigger reads native scroll on the existing section anchors. It holds each composition before easing into the next over at most 360 px. Smaller viewports and reduced-motion users get a static Arrival shot and can still explore manually. Arrival is visible immediately.
+
+| Chapter | Editorial anchor | Camera position | Look target |
+| --- | --- | --- | --- |
+| The Arrival | Pavilion | `[23, 18, 28]` | `[0, 0.9, 0]` |
+| Shelter & Shade | Concept | `[12, 10.7, 27]` | `[0, 1.15, 0.1]` |
+| Material & Texture | Materials | `[-7.3, 5.95, 20.7]` | `[-1.65, 1.7, 1.25]` |
+| Landscape & Stillness | Specs | `[-17.5, 17, 26.5]` | `[0, 0.65, 2.8]` |
+
+Explore starts and resets at the pose and target visible on entry. While exploring, progress still tracks scroll. Done and Escape clear manual damping and start an interruptible return around the site. Reduced motion cuts to Arrival. Re-entry kills the return and takes over from the displayed camera. The trigger cleans up on media changes and unmount, refreshes after fonts load, and never pins the page. Scroll restoration runs after React inserts the document when native restoration has not already moved the page.
+
+Browser QA passed at 1440 × 900, 1024 × 768, 768 × 1024, 390 × 844, and 320 × 568. Verified both scroll directions, chapter anchors and reload, reset and interrupted handoffs, one Canvas during resize, keyboard focus, touch emulation, dynamic reduced motion, and both WebGL failure paths. The StrictMode development build settled at one story trigger and zero return tweens. No normal application errors or external requests were observed. The existing Three.js Clock warning remains.
+
+Draw calls and triangles stayed at 80 and 8,984 per measured frame, including shadows. Geometries and textures were 55 and 3. The RTX 4060 Chromium measurement used a 1152 × 920 viewport at DPR 1 and a 653 × 496 buffer. Production JavaScript is 380.64 kB gzip (+47.61 kB versus TERRA-005C). Fonts remain 85,832 bytes. On an isolated Edge SwiftShader run at 1440 × 900, two settled windows of 250–260 ms rendered zero frames. Scripted wheel input produced 20 frames, with renderer-call CPU median/p95 of 0.6/0.9 ms and render-start interval 39.1/54.9 ms. A scripted drag and damping produced 33 frames, with CPU 0.7/1.3 ms and interval 31.7/37.1 ms. These samples include input scheduling effects and do not establish GPU timing or device FPS.
+
 ## TERRA-005C · Editorial integration checkpoint
 
 Reviewed Antigravity’s Architectural Monograph implementation, self-hosted fonts and licenses, and Browse/Explore integration. The approved design and protected villa geometry, materials, landscaping, and dependencies are intact.
@@ -79,4 +96,4 @@ Fiber and Drei bring in Zustand transitively. TERRA has no direct dependency on 
 
 ## Next task
 
-TERRA-006 introduces GSAP and cinematic camera transitions (intro, scroll-driven framing, and explicit camera ownership handoff with reduced-motion support). Start after explicit approval.
+TERRA-007 reviews and refines the approved visuals and chapter presentation. Start after explicit approval.

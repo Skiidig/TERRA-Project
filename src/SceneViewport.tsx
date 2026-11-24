@@ -1,8 +1,9 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Component, useCallback, useEffect, useRef, useState } from 'react'
+import { Component, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentRef, ReactNode } from 'react'
 import { PerspectiveCamera, Spherical, Vector3 } from 'three'
+import { flushOrbitDamping, STORY_MEDIA, storyPoses, useCinematicCamera } from './cinematicCamera'
 import { stageContent } from './content/editorial'
 import { VillaBlockout } from './VillaBlockout'
 
@@ -14,6 +15,7 @@ const MAX_DISTANCE = 62
 const ROTATE_STEP_RAD = Math.PI / 6
 const ZOOM_IN_FACTOR = 0.84
 const ZOOM_OUT_FACTOR = 1.19
+const arrivalCamera = { position: storyPoses[0].position, fov: 37, near: 0.5, far: 120 }
 
 function SceneFallback() {
   return (
@@ -41,9 +43,15 @@ class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean
 }
 
 function SceneController({
+  orbit,
+  exploring,
+  onChapter,
   onLoss,
   onBindInvalidate,
 }: {
+  orbit: Orbit | null
+  exploring: boolean
+  onChapter: (chapter: number) => void
   onLoss: () => void
   onBindInvalidate: (fn: (() => void) | null) => void
 }) {
@@ -51,6 +59,8 @@ function SceneController({
   const camera = useThree((state) => state.camera)
   const size = useThree((state) => state.size)
   const invalidate = useThree((state) => state.invalidate)
+
+  useCinematicCamera(camera, orbit, exploring, invalidate, onChapter)
 
   useEffect(() => {
     onBindInvalidate(invalidate)
@@ -64,10 +74,11 @@ function SceneController({
   }, [gl, onLoss])
 
   useEffect(() => {
-    // Keep the full 24x18m plinth and palm crowns unclipped on narrow portrait viewports.
+    // The desktop story column is narrower than the full-bleed compact stage.
     if (!(camera instanceof PerspectiveCamera) || size.height <= 0) return
     const aspect = size.width / size.height
-    const targetFov = aspect < 1.2 ? Math.min(54, 37 * (1.2 / Math.max(aspect, 0.72))) : 37
+    const fitAspect = window.matchMedia(STORY_MEDIA).matches ? 1.55 : 1.2
+    const targetFov = Math.min(54, 37 * Math.max(1, fitAspect / Math.max(aspect, 0.72)))
     if (Math.abs(camera.fov - targetFov) > 0.1) {
       camera.fov = targetFov
       camera.updateProjectionMatrix()
@@ -111,11 +122,12 @@ interface SceneViewportProps {
 }
 
 export function SceneViewport({ mode, onModeChange, onAvailabilityChange }: SceneViewportProps) {
-  const orbit = useRef<Orbit | null>(null)
+  const [orbit, bindOrbit] = useState<Orbit | null>(null)
+  const [chapter, setChapter] = useState(0)
   const invalidateRef = useRef<(() => void) | null>(null)
   const exploreBtnRef = useRef<HTMLButtonElement | null>(null)
   const rotateBtnRef = useRef<HTMLButtonElement | null>(null)
-  const [ready, setReady] = useState(false)
+  const restoreFocus = useRef(false)
   const [contextLost, setContextLost] = useState(false)
 
   const handleContextLoss = useCallback(() => {
@@ -127,39 +139,45 @@ export function SceneViewport({ mode, onModeChange, onAvailabilityChange }: Scen
     invalidateRef.current = fn
   }, [])
 
-  const bindOrbit = useCallback((controls: Orbit | null) => {
-    orbit.current = controls
-    controls?.saveState()
-    setReady(controls !== null)
-  }, [])
-
-  const unavailable = !ready || contextLost
+  const unavailable = !orbit || contextLost
   const isExploring = mode === 'explore' && !unavailable
 
   useEffect(() => {
     onAvailabilityChange(!unavailable)
   }, [onAvailabilityChange, unavailable])
 
+  const leaveExplore = useCallback(() => {
+    restoreFocus.current = true
+    onModeChange('browse')
+  }, [onModeChange])
+
+  useLayoutEffect(() => {
+    if (isExploring) {
+      rotateBtnRef.current?.focus({ preventScroll: true })
+    } else if (restoreFocus.current) {
+      restoreFocus.current = false
+      exploreBtnRef.current?.focus({ preventScroll: true })
+    }
+  }, [isExploring])
+
   useEffect(() => {
     if (!isExploring) return
-
-    rotateBtnRef.current?.focus({ preventScroll: true })
-
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         event.preventDefault()
-        onModeChange('browse')
-        requestAnimationFrame(() => exploreBtnRef.current?.focus())
+        leaveExplore()
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isExploring, onModeChange])
+  }, [isExploring, leaveExplore])
 
   function applySphericalDelta(deltaTheta: number, distanceMultiplier: number) {
-    const controls = orbit.current
-    if (!controls) return
+    const controls = orbit
+    if (!controls?.enabled) return
+
+    flushOrbitDamping(controls)
 
     const camera = controls.object
     const offset = new Vector3().copy(camera.position).sub(controls.target)
@@ -174,22 +192,16 @@ export function SceneViewport({ mode, onModeChange, onAvailabilityChange }: Scen
     offset.setFromSpherical(spherical)
     camera.position.copy(controls.target).add(offset)
 
-    const previousDamping = controls.enableDamping
-    controls.enableDamping = false
     controls.update()
-    controls.enableDamping = previousDamping
     invalidateRef.current?.()
   }
 
   function resetView() {
-    const controls = orbit.current
-    if (!controls) return
+    const controls = orbit
+    if (!controls?.enabled) return
 
-    // Consume any remaining drag inertia before restoring the saved pose.
-    controls.enableDamping = false
-    controls.update()
+    flushOrbitDamping(controls)
     controls.reset()
-    controls.enableDamping = true
     invalidateRef.current?.()
   }
 
@@ -210,13 +222,16 @@ export function SceneViewport({ mode, onModeChange, onAvailabilityChange }: Scen
             <Canvas
               aria-hidden="true"
               className="scene-canvas"
-              camera={{ position: [23, 18, 28], fov: 37, near: 0.5, far: 120 }}
+              camera={arrivalCamera}
               dpr={[1, 1.5]}
               frameloop="demand"
               gl={{ alpha: false, antialias: true, powerPreference: 'default' }}
               shadows="percentage"
             >
               <SceneController
+                orbit={orbit}
+                exploring={isExploring}
+                onChapter={setChapter}
                 onLoss={handleContextLoss}
                 onBindInvalidate={bindInvalidate}
               />
@@ -224,13 +239,10 @@ export function SceneViewport({ mode, onModeChange, onAvailabilityChange }: Scen
               <VillaBlockout />
               <OrbitControls
                 ref={bindOrbit}
-                enabled={isExploring}
-                target={[0, 0.9, 0]}
+                enabled={false}
                 enableDamping
                 dampingFactor={0.12}
                 enablePan={false}
-                enableZoom={isExploring}
-                enableRotate={isExploring}
                 minDistance={MIN_DISTANCE}
                 maxDistance={MAX_DISTANCE}
                 minPolarAngle={0.2}
@@ -244,6 +256,9 @@ export function SceneViewport({ mode, onModeChange, onAvailabilityChange }: Scen
       <div className="stage-bar">
         <div className="container stage-bar-inner">
           <div className="stage-meta">
+            {!unavailable && !isExploring && (
+              <p className="stage-chapter">0{chapter + 1} / {storyPoses[chapter].title}</p>
+            )}
             <h2 id="scene-heading" className="sr-only">
               {stageContent.title}
             </h2>
@@ -312,16 +327,14 @@ export function SceneViewport({ mode, onModeChange, onAvailabilityChange }: Scen
                   type="button"
                   className="btn btn-secondary"
                   onClick={resetView}
+                  title="Restore the view you entered Explore with"
                 >
                   Reset view
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => {
-                    onModeChange('browse')
-                    requestAnimationFrame(() => exploreBtnRef.current?.focus())
-                  }}
+                  onClick={leaveExplore}
                 >
                   Done exploring
                 </button>

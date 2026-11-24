@@ -8,7 +8,7 @@ TERRA is a portfolio and educational project exploring a tropical modern villa t
 
 Use Node.js 26 LTS and npm 11. Run `npm ci`, then `npm run dev -- --host localhost`.
 
-Browse Mode is active by default so page scrolling remains unobstructed over the architectural stage. Select **Explore 3D** to orbit, zoom, use the accessible rotate/zoom/reset controls, or press **Escape** / **Done exploring** to return to Browse Mode. The 3D diorama requires WebGL 2; all editorial content remains readable when WebGL is unavailable.
+On wider screens, scroll through the monograph to change the camera composition. Compact screens and reduced-motion settings keep a static establishing view. Select **Explore 3D** to orbit or zoom. **Reset view** restores the shot where you entered Explore. Press **Escape** or select **Done exploring** to return to the current story shot. The editorial content stays available when WebGL 2 is unavailable.
 
 Run `npm run typecheck`, `npm run lint`, and `npm run build` before handing off changes. Vite writes production assets to `dist/`.
 
