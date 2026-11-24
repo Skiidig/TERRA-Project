@@ -1,0 +1,18 @@
+:root {
+  color-scheme: light dark;
+  --paper: light-dark(#f5f4f0, #20211f);
+  --ink: light-dark(#232521, #ecece6);
+  color: var(--ink);
+  background: var(--paper);
+  font: 1rem/1.5 system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 40rem;
+  margin-inline: auto;
+  padding: 4rem 1.5rem;
+}
