@@ -1,5 +1,31 @@
 # Handoff
 
+## TERRA-005C · Editorial integration checkpoint
+
+Reviewed Antigravity’s Architectural Monograph implementation, self-hosted fonts and licenses, and Browse/Explore integration. The approved design and protected villa geometry, materials, landscaping, and dependencies are intact.
+
+The original Canvas event wrapper computed `touch-action: none` after OrbitControls connected. A scoped CSS rule now inherits the stage policy on that event target, with no imperative ancestor styling. Explore focuses the first camera control, both entry buttons disable when WebGL is unavailable, and the skip link focuses the main landmark.
+
+Production browser QA passed at 1440, 1024, 768, 390, and 320 px. Verified one persistent Canvas, unclipped default framing, wheel scroll, orbit, zoom, rotate buttons, reset, keyboard navigation, Escape focus restoration, and both WebGL failure paths. Isolated Edge emulation verified initial Browse swipe scrolling, Explore touch orbit and pinch, and restored scrolling on exit. The same browser verified reduced-motion media behavior and camera controls, loaded all three local font faces, and recorded no external requests. A clean production tab reported no application errors and the existing Three.js Clock warning. Physical mobile touch remains untested.
+
+| Metric | TERRA-004 | TERRA-005C |
+| --- | ---: | ---: |
+| Draw calls / triangles including shadow work | 80 / 8,984 | 80 / 8,984 |
+| Renderer geometries / textures | 56 / 3 | 55 / 3 |
+| Production JS minified / gzip | 1,186.44 / 329.20 kB | 1,198.19 / 333.03 kB |
+
+The renderer counters use the same per-render reset and 1152 × 920 Chromium viewport, DPR 1, and RTX 4060 ANGLE D3D11 as TERRA-004. The editorial Canvas buffer is 1137 × 607 instead of 1024 × 512. Fonts total 85,832 bytes. Interaction frame timing and GPU timing were not remeasured. The production build still reports the chunk size warning. See the next task at the end of this file.
+
+## TERRA-005 · Editorial website
+
+Implemented the approved **Architectural Monograph — Seamless Warm-Paper Stage** editorial website around the existing procedural 3D villa without altering `VillaBlockout.tsx`, `VillaMaterials.ts`, or `TropicalLandscape.tsx`.
+
+- **Design System & Typography**: Deliberate warm daylight palette (`--color-ivory: #f4f1ea`, `--color-ivory-tinted: #ede8dd`, `--color-stage: #e5ded1`, `--color-stone: #d8d0c2`, `--color-timber: #a68b70`, `--color-olive: #777d64`, `--color-olive-text: #4f5441`, `--color-ink: #171b18`). Self-hosted Latin WOFF2 subsets under `public/fonts/` with `font-display: swap` and zero runtime third-party requests: `cormorant-garamond-latin.woff2` (37,640 B), `cormorant-garamond-italic-latin.woff2` (23,660 B), and `manrope-latin.woff2` (24,532 B) — **85,832 B (~83.82 kB)** total font transfer, accompanied by official upstream SIL OFL 1.1 notices (`OFL-Cormorant-Garamond.txt`, `OFL-Manrope.txt`).
+- **Editorial Structure**: Semantic single-page layout (`src/App.tsx`, `src/content/editorial.ts`, `src/style.css`) with skip link, opaque sticky navigation (`Pavilion`, `Concept`, `Materials`, `Specs`), asymmetric hero, full-bleed seamless `#e5ded1` architectural stage, 3-principle concept narrative, 4-surface materiality ledger, 10-row conceptual specification ledger matching `VillaBlockout.tsx` dimensions, and concise colophon.
+- **Interaction Modes & Camera Framing**: Antigravity introduced Browse and Explore modes and accessible camera controls. `SceneController` widens vertical FOV below aspect 1.2, up to 54°, while preserving the 37° desktop framing and default camera pose. See TERRA-005C above for the touch policy and completed verification.
+- **Verification & Metrics**: `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check` passed. Production JS is `1,198.24 kB` minified / `333.00 kB` gzip (+3.80 kB gzip vs TERRA-004); production CSS is `12.43 kB` minified / `3.05 kB` gzip. Browser visual QA verified desktop (`1440 × 900`, `1024 × 768`), tablet (`768 × 1024`), and mobile (`390 × 844`, `320 × 568`): zero console errors, zero external network requests, zero horizontal overflow, single persistent `<canvas>`, unobstructed Browse Mode wheel scroll, Explore Mode orbit/zoom/reset/Escape, single-row mobile nav, and unclipped framing. Draw calls/triangles were unchanged in source (3D scene files untouched; runtime `renderer.info` counters and `WEBGL_lose_context` / `getContext` fault injection were not re-measured because the in-app webview browser sandbox does not expose `page.evaluate` or `page.addInitScript`).
+- **TERRA-006 Considerations**: The single persistent `<Canvas>` remains in normal document flow with `OrbitControls` as the sole camera owner. Semantic section IDs (`#pavilion`, `#scene-stage`, `#concept`, `#materials`, `#specifications`) and the `SceneMode` (`browse` | `explore`) boundary are ready for TERRA-006 GSAP intro/scroll choreography and explicit camera ownership handoff with reduced-motion instant cuts.
+
 ## TERRA-004 · Material, lighting, and environment
 
 The villa retains the TERRA-003 footprint, roof dimensions, and default camera. Shared nonmetallic standard materials distinguish concrete, teak, limestone, lightly tinted glass, and separate coping, basin, and water. Recessed roof edges, terrace joints, and instanced window frames clarify the assembly. The 10 × 3.5 m pool keeps its 0.32 m recess, with its static surface lowered to Y=-0.19 m.
@@ -53,4 +79,4 @@ Fiber and Drei bring in Zustand transitively. TERRA has no direct dependency on 
 
 ## Next task
 
-TERRA-005 introduces the responsive editorial website around the existing scene. Start after explicit approval.
+TERRA-006 introduces GSAP and cinematic camera transitions (intro, scroll-driven framing, and explicit camera ownership handoff with reduced-motion support). Start after explicit approval.
