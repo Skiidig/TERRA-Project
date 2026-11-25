@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
@@ -16,18 +17,31 @@ gsap.registerPlugin(ScrollTrigger)
 
 export function App() {
   const rootRef = useRef<HTMLDivElement>(null)
+  const closingRef = useRef<HTMLElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [headerOnDark, setHeaderOnDark] = useState(false)
   const [activeLayerId, setActiveLayerId] = useState<string>(anatomyContent.layers[0].id)
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 24)
+      const y = window.scrollY
+      setScrolled(y > 24)
+      const closingEl = closingRef.current
+      if (closingEl) {
+        const rect = closingEl.getBoundingClientRect()
+        setHeaderOnDark(rect.top <= 68)
+      }
     }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('resize', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
   }, [])
 
   useEffect(() => {
@@ -52,42 +66,110 @@ export function App() {
     if (prefersReducedMotion) return
 
     const ctx = gsap.context(() => {
+      // 1. Hero entrance: immediate, restrained editorial typography + masked pavilion settle
       gsap.from('[data-hero-reveal]', {
         opacity: 0,
-        y: 16,
-        duration: 0.85,
-        stagger: 0.08,
-        ease: 'power2.out',
+        y: 14,
+        duration: 0.78,
+        stagger: 0.07,
+        ease: 'power3.out',
         clearProps: 'transform,opacity',
       })
 
-      gsap.from('[data-hero-media]', {
-        opacity: 0,
-        scale: 1.03,
-        duration: 1.05,
-        delay: 0.14,
-        ease: 'power2.out',
-        clearProps: 'transform,opacity',
+      gsap.fromTo(
+        '[data-hero-frame]',
+        { clipPath: 'inset(5% 0% 0% 0%)', opacity: 0.92 },
+        {
+          clipPath: 'inset(0% 0% 0% 0%)',
+          opacity: 1,
+          duration: 1.05,
+          delay: 0.08,
+          ease: 'power3.out',
+          clearProps: 'clipPath,opacity',
+        },
+      )
+
+      gsap.from('[data-hero-img]', {
+        scale: 1.05,
+        duration: 1.25,
+        delay: 0.08,
+        ease: 'power3.out',
+        clearProps: 'transform',
       })
 
+      // 2. Architectural media mask reveals (early trigger so no blank frames appear in viewport)
+      const mediaFrames = gsap.utils.toArray<HTMLElement>('[data-media-reveal]')
+      mediaFrames.forEach((frame) => {
+        const img = frame.querySelector('img')
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: frame,
+            start: 'top 92%',
+            once: true,
+          },
+        })
+
+        tl.fromTo(
+          frame,
+          { clipPath: 'inset(6% 0% 0% 0%)' },
+          {
+            clipPath: 'inset(0% 0% 0% 0%)',
+            duration: 0.9,
+            ease: 'power3.out',
+            clearProps: 'clipPath',
+          },
+        )
+
+        if (img && !img.hasAttribute('data-parallax-img')) {
+          tl.from(
+            img,
+            {
+              scale: 1.045,
+              duration: 1.05,
+              ease: 'power3.out',
+              clearProps: 'transform',
+            },
+            0,
+          )
+        }
+      })
+
+      // 3. Concise editorial text reveals
       const revealGroups = gsap.utils.toArray<HTMLElement>('[data-reveal]')
       revealGroups.forEach((element) => {
         gsap.from(element, {
           opacity: 0,
-          y: 22,
-          duration: 0.8,
-          ease: 'power2.out',
+          y: 16,
+          duration: 0.68,
+          ease: 'power3.out',
           clearProps: 'transform,opacity',
           scrollTrigger: {
             trigger: element,
-            start: 'top 86%',
+            start: 'top 93%',
             once: true,
           },
         })
       })
 
+      // 4. Desktop-only subtle scroll-linked motion (hero handoff scale + spatial interior parallax)
       const mm = gsap.matchMedia()
       mm.add('(min-width: 64rem)', () => {
+        const heroImg = root.querySelector<HTMLElement>('[data-hero-img]')
+        const heroSection = root.querySelector<HTMLElement>('.hero-section')
+        if (heroImg && heroSection) {
+          gsap.to(heroImg, {
+            scale: 1.045,
+            yPercent: 2.5,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: heroSection,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 0.6,
+            },
+          })
+        }
+
         const parallaxImages = gsap.utils.toArray<HTMLElement>('[data-parallax-img]')
         parallaxImages.forEach((img) => {
           gsap.fromTo(
@@ -100,7 +182,7 @@ export function App() {
                 trigger: img.parentElement ?? img,
                 start: 'top bottom',
                 end: 'bottom top',
-                scrub: true,
+                scrub: 0.5,
               },
             },
           )
@@ -111,11 +193,36 @@ export function App() {
     return () => ctx.revert()
   }, [])
 
-  const activeLayer =
-    anatomyContent.layers.find((layer) => layer.id === activeLayerId) ?? anatomyContent.layers[0]
+  const activeLayerIndex = Math.max(
+    0,
+    anatomyContent.layers.findIndex((layer) => layer.id === activeLayerId),
+  )
+  const activeLayer = anatomyContent.layers[activeLayerIndex] ?? anatomyContent.layers[0]
 
   function handleNavClick() {
     setMenuOpen(false)
+  }
+
+  function handleAnatomyKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
+    const total = anatomyContent.layers.length
+    let nextIndex: number
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+      nextIndex = (index + 1) % total
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+      nextIndex = (index - 1 + total) % total
+    } else if (event.key === 'Home') {
+      nextIndex = 0
+    } else if (event.key === 'End') {
+      nextIndex = total - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    const nextLayer = anatomyContent.layers[nextIndex]
+    setActiveLayerId(nextLayer.id)
+    tabRefs.current[nextIndex]?.focus()
   }
 
   return (
@@ -124,7 +231,9 @@ export function App() {
         Skip to content
       </a>
 
-      <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
+      <header
+        className={`site-header${scrolled ? ' is-scrolled' : ''}${headerOnDark && !menuOpen ? ' is-on-dark' : ''}`}
+      >
         <div className="container header-inner">
           <a className="brand-wordmark" href="#top" aria-label="TERRA — return to top">
             TERRA
@@ -220,7 +329,7 @@ export function App() {
             </div>
 
             <figure className="hero-figure">
-              <div className="media-frame media-frame-hero" data-hero-media>
+              <div className="media-frame media-frame-hero" data-hero-frame>
                 <img
                   src={heroContent.image}
                   alt={heroContent.imageAlt}
@@ -229,9 +338,12 @@ export function App() {
                   fetchPriority="high"
                   decoding="async"
                   className="media-img"
+                  data-hero-img
                 />
               </div>
-              <figcaption className="media-caption">{heroContent.caption}</figcaption>
+              <figcaption className="media-caption" data-hero-reveal>
+                {heroContent.caption}
+              </figcaption>
             </figure>
           </div>
         </section>
@@ -239,12 +351,12 @@ export function App() {
         {/* 2. PHILOSOPHY */}
         <section
           id="philosophy"
-          className="section section-white"
+          className="section section-white section-philosophy"
           aria-labelledby="philosophy-headline"
         >
           <div className="container philosophy-grid">
-            <figure className="philosophy-media" data-reveal>
-              <div className="media-frame media-frame-philosophy">
+            <figure className="philosophy-media">
+              <div className="media-frame media-frame-philosophy" data-media-reveal>
                 <img
                   src={philosophyContent.image}
                   alt={philosophyContent.imageAlt}
@@ -290,7 +402,7 @@ export function App() {
         {/* 3. MATERIALITY */}
         <section
           id="materiality"
-          className="section section-ivory"
+          className="section section-ivory section-materiality"
           aria-labelledby="materiality-headline"
         >
           <div className="container">
@@ -309,26 +421,27 @@ export function App() {
                 <li
                   key={material.name}
                   className={`material-study${index === 1 ? ' is-offset' : ''}`}
-                  data-reveal
                 >
-                  <div className="media-frame media-frame-portrait">
+                  <div className="media-frame media-frame-portrait" data-media-reveal>
                     <img
                       src={material.image}
                       alt={material.alt}
                       width={900}
                       height={1200}
                       decoding="async"
-                      className="media-img"
+                      className="media-img media-img-interactive"
                     />
                   </div>
-                  <div className="material-meta">
-                    <span className="material-index" aria-hidden="true">
-                      {material.index}
-                    </span>
-                    <span className="material-role">{material.role}</span>
+                  <div className="material-copy" data-reveal>
+                    <div className="material-meta">
+                      <span className="material-index" aria-hidden="true">
+                        {material.index}
+                      </span>
+                      <span className="material-role">{material.role}</span>
+                    </div>
+                    <h3 className="material-name">{material.name}</h3>
+                    <p className="material-description">{material.description}</p>
                   </div>
-                  <h3 className="material-name">{material.name}</h3>
-                  <p className="material-description">{material.description}</p>
                 </li>
               ))}
             </ol>
@@ -338,7 +451,7 @@ export function App() {
         {/* 4. DESIGN ANATOMY */}
         <section
           id="anatomy"
-          className="section section-stone"
+          className="section section-stone section-anatomy"
           aria-labelledby="anatomy-headline"
         >
           <div className="container">
@@ -350,42 +463,47 @@ export function App() {
               <p className="section-intro anatomy-intro">{anatomyContent.intro}</p>
             </div>
 
-            <div className="anatomy-stage" data-reveal>
+            <div className="anatomy-stage">
               <figure className="anatomy-figure">
-                <div className="media-frame media-frame-anatomy">
+                <div className="media-frame media-frame-anatomy" data-media-reveal>
                   <img
                     src={anatomyContent.image}
                     alt={anatomyContent.imageAlt}
                     width={1600}
                     height={900}
                     decoding="async"
-                    className="media-img"
+                    className="media-img anatomy-img"
                   />
                 </div>
-                <figcaption className="anatomy-caption">
+                <figcaption className="anatomy-caption" data-reveal>
                   <span className="anatomy-caption-dot" aria-hidden="true" />
                   <span>{anatomyContent.placeholderNote}</span>
                 </figcaption>
               </figure>
 
-              <div className="anatomy-inspector">
+              <div className="anatomy-inspector" data-reveal>
                 <div
                   className="anatomy-layer-list"
                   role="tablist"
                   aria-label="Architectural anatomy layers"
                 >
-                  {anatomyContent.layers.map((layer) => {
+                  {anatomyContent.layers.map((layer, index) => {
                     const isSelected = layer.id === activeLayer.id
                     return (
                       <button
                         key={layer.id}
+                        ref={(el) => {
+                          tabRefs.current[index] = el
+                        }}
                         type="button"
                         role="tab"
                         id={`anatomy-tab-${layer.id}`}
                         aria-selected={isSelected}
                         aria-controls={`anatomy-panel-${layer.id}`}
+                        tabIndex={isSelected ? 0 : -1}
                         className={`anatomy-layer-btn${isSelected ? ' is-active' : ''}`}
                         onClick={() => setActiveLayerId(layer.id)}
+                        onKeyDown={(event) => handleAnatomyKeyDown(event, index)}
                       >
                         <span className="anatomy-layer-index">{layer.index}</span>
                         <span className="anatomy-layer-title">{layer.title}</span>
@@ -395,11 +513,15 @@ export function App() {
                 </div>
 
                 <div
+                  key={activeLayer.id}
                   id={`anatomy-panel-${activeLayer.id}`}
                   role="tabpanel"
                   aria-labelledby={`anatomy-tab-${activeLayer.id}`}
                   className="anatomy-detail-panel"
                 >
+                  <p className="anatomy-detail-stratum">
+                    Stratum {activeLayer.index} / 0{anatomyContent.layers.length}
+                  </p>
                   <p className="anatomy-detail-spec">{activeLayer.specification}</p>
                   <p className="anatomy-detail-summary">{activeLayer.summary}</p>
                 </div>
@@ -415,7 +537,7 @@ export function App() {
           aria-labelledby="spatial-headline"
         >
           <div className="container">
-            <div className="section-header-split" data-reveal>
+            <div className="section-header-split section-header-compact" data-reveal>
               <div>
                 <p className="eyebrow">{spatialContent.eyebrow}</p>
                 <h2 id="spatial-headline" className="section-headline">
@@ -426,8 +548,8 @@ export function App() {
             </div>
           </div>
 
-          <figure className="spatial-bleed-figure" data-reveal>
-            <div className="media-frame media-frame-spatial">
+          <figure className="spatial-bleed-figure">
+            <div className="media-frame media-frame-spatial" data-media-reveal>
               <img
                 src={spatialContent.image}
                 alt={spatialContent.imageAlt}
@@ -455,6 +577,7 @@ export function App() {
         {/* 6. CLOSING */}
         <section
           id="closing"
+          ref={closingRef}
           className="section section-charcoal section-closing"
           aria-labelledby="closing-headline"
         >
@@ -467,14 +590,13 @@ export function App() {
               <p className="closing-supporting">{closingContent.supportingLine}</p>
             </div>
 
-            <figure className="closing-figure" data-reveal>
-              <div className="media-frame media-frame-closing">
+            <figure className="closing-figure">
+              <div className="media-frame media-frame-closing" data-media-reveal>
                 <img
                   src={closingContent.image}
                   alt={closingContent.imageAlt}
                   width={1600}
                   height={900}
-                  loading="lazy"
                   decoding="async"
                   className="media-img"
                 />

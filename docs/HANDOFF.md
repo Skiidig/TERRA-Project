@@ -1,5 +1,21 @@
 # Handoff
 
+## TERRA V2 · Homepage Visual Prototype & Motion Refinement (approved local checkpoint)
+
+Established the new **TERRA V2** creative direction on isolated branch `experiment/terra-v2-design` (leaving production V1 `main` untouched at `7bd2201`). Website design now leads the experience, inspired by Apple product precision, Norm Architects materiality, and Bang & Olufsen restraint, with 3D reserved as a selective future enhancement rather than the foundation.
+
+- **Approved Homepage Architecture**: Implemented a 6-section minimalist editorial homepage (`index.html`, `src/App.tsx`, `src/style.css`, `src/content/v2Content.ts`) on the existing Vite + React 19 + TypeScript + GSAP 3 + plain CSS stack (`0` new dependencies, `0` external runtime font requests):
+  - **Hero** (*"Architecture, distilled."* / *"A quieter way to inhabit the world."*): Tight-tracked `Manrope` display typography paired with selective `Cormorant Garamond` italic accents and full pavilion + caption framed above the fold across `1440×900`, `1024×768`, `390×844`, and `320×568`.
+  - **Philosophy** (*"Less form. More feeling."*): Asymmetric `#FFFFFF` editorial split with `6 / 5` overhang photography and hairline proportion metrics (`16 × 8 m`, `1.0 m`, `3.2 m`).
+  - **Materiality** (*"Nothing unnecessary."*): Staggered 3-column `3:4` close-up triptych (**Board-Formed Concrete**, **Rift-Cut Natural Oak**, **Low-Iron Architectural Glass**) with `0px` framing and subtle hover scale.
+  - **Design Anatomy** (*"Every layer. A purpose."*): Seamless `#EBE7DC` stone showcase with edge-feathered exploded 4-layer axonometric model paired side-by-side (`8fr / 4fr`) with a WAI-ARIA keyboard-navigable (`Arrow`/`Home`/`End`) layer inspector (`01 Cantilevered Roof Plane` → `04 Grounded Plinth & Basin`).
+  - **Spatial Experience** (*"Space to breathe."*): Full-bleed interior photography with subtle desktop-only scroll parallax and two-column daylight/threshold notes.
+  - **Closing & Footer** (*"Designed to feel different."*): `#171A18` dusk band with adaptive dark sticky header transition, balanced 2-column mobile footer navigation, and explicit prototype imagery disclosure.
+- **Motion Language**: Coherent GSAP 3 + `ScrollTrigger` choreography (`power3.out` clip-path image reveals, hero entrance + desktop scroll-linked scale handoff, subtle spatial parallax), strictly preserving native scroll, full `prefers-reduced-motion: reduce` instant-final-state support, and `gsap.context()` cleanup.
+- **Prototype Imagery Status**: All 8 images under `public/images/` (`hero.jpg`, `philosophy.jpg`, `material-concrete.jpg`, `material-timber.jpg`, `material-glass.jpg`, `anatomy.jpg`, `spatial.jpg`, `closing.jpg`) are AI-generated conceptual architectural visualizations created for V2 visual review and do not represent a built project.
+- **Pending Next Phases (awaiting separate authorization)**: Final architectural photography/renders, signature interactive Design Anatomy exploded-layer animation (replacing the static axonometric placeholder), and eventual merge/deployment decisions.
+- **Verification**: `npm run typecheck`, `npm run lint`, `npm run build` (`17.58 kB` CSS / `4.11 kB` gzip; `357.24 kB` JS / `120.79 kB` gzip), and `git diff --check` passed; live browser QA verified `1440×900`, `1024×768`, `390×844`, and `320×568` (`0` console errors, `0` failed requests, `0` horizontal overflow, working anatomy tabs and mobile menu drawer).
+
 ## TERRA-009 · Portfolio release (complete)
 
 Deployed TERRA MVP to Vercel via GitHub integration (`https://github.com/Skiidig/TERRA-Project.git` → `https://terra-project-six.vercel.app`) and verified the live HTTPS production deployment.
