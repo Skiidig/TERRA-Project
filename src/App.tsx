@@ -104,139 +104,181 @@ export function App() {
     const root = rootRef.current
     if (!root) return
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (prefersReducedMotion) return
+    const mm = gsap.matchMedia()
+    mm.add(
+      {
+        motionOk: '(prefers-reduced-motion: no-preference)',
+        isDesktop: '(min-width: 64rem)',
+        isCompact: '(max-width: 47.99rem)',
+      },
+      (context) => {
+        const { motionOk, isDesktop, isCompact } = context.conditions ?? {}
+        if (!motionOk) return
 
-    const ctx = gsap.context(() => {
-      // 1. Hero entrance: immediate, restrained editorial typography + masked pavilion settle
-      gsap.from('[data-hero-reveal]', {
-        opacity: 0,
-        y: 14,
-        duration: 0.78,
-        stagger: 0.07,
-        ease: 'power3.out',
-        clearProps: 'transform,opacity',
-      })
-
-      gsap.fromTo(
-        '[data-hero-frame]',
-        { clipPath: 'inset(5% 0% 0% 0%)', opacity: 0.92 },
-        {
-          clipPath: 'inset(0% 0% 0% 0%)',
-          opacity: 1,
-          duration: 1.05,
-          delay: 0.08,
-          ease: 'power3.out',
-          clearProps: 'clipPath,opacity',
-        },
-      )
-
-      gsap.from('[data-hero-img]', {
-        scale: 1.05,
-        duration: 1.25,
-        delay: 0.08,
-        ease: 'power3.out',
-        clearProps: 'transform',
-      })
-
-      // 2. Architectural media mask reveals (skip elements already above/in view; play once without self-killing mid-init)
-      const mediaFrames = gsap.utils.toArray<HTMLElement>('[data-media-reveal]')
-      mediaFrames.forEach((frame) => {
-        if (frame.getBoundingClientRect().top < window.innerHeight * 0.92) return
-        const img = frame.querySelector('img')
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: frame,
-            start: 'top 92%',
-            toggleActions: 'play none none none',
-          },
-        })
-
-        tl.fromTo(
-          frame,
-          { clipPath: 'inset(6% 0% 0% 0%)' },
-          {
-            clipPath: 'inset(0% 0% 0% 0%)',
-            duration: 0.9,
-            ease: 'power3.out',
-            clearProps: 'clipPath',
-          },
-        )
-
-        if (img && !img.hasAttribute('data-parallax-img')) {
-          tl.from(
-            img,
+        // 1. Hero entrance: single coordinated timeline, LCP image visible immediately at opacity 1
+        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+        heroTl
+          .fromTo(
+            '[data-hero-img]',
+            { scale: 1.035 },
             {
-              scale: 1.045,
-              duration: 1.05,
-              ease: 'power3.out',
+              scale: 1,
+              duration: 1.15,
               clearProps: 'transform',
             },
             0,
           )
-        }
-      })
+          .fromTo(
+            '[data-hero-reveal]',
+            { opacity: 0.78, y: 12 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.72,
+              stagger: 0.06,
+              clearProps: 'transform,opacity',
+            },
+            0.02,
+          )
+          .fromTo(
+            '[data-hero-rule]',
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              duration: 0.85,
+              transformOrigin: 'left center',
+              clearProps: 'transform',
+            },
+            0.06,
+          )
+          .fromTo(
+            '[data-hero-caption]',
+            { opacity: 0.65, y: 6 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.56,
+              clearProps: 'transform,opacity',
+            },
+            0.16,
+          )
 
-      // 3. Concise editorial text reveals — start from a legible opacity floor on mobile so
-      //    headings never appear washed out while scrolling into view
-      const isCompactViewport = window.matchMedia('(max-width: 47.99rem)').matches
-      const revealGroups = gsap.utils.toArray<HTMLElement>('[data-reveal]')
-      revealGroups.forEach((element) => {
-        if (element.getBoundingClientRect().top < window.innerHeight * 0.96) return
-        gsap.from(element, {
-          opacity: isCompactViewport ? 0.85 : 0.32,
-          y: isCompactViewport ? 10 : 14,
-          duration: isCompactViewport ? 0.36 : 0.54,
-          ease: 'power3.out',
-          clearProps: 'transform,opacity',
-          scrollTrigger: {
-            trigger: element,
-            start: isCompactViewport ? 'top 98%' : 'top 95%',
-            toggleActions: 'play none none none',
-          },
-        })
-      })
-
-      // 4. Desktop-only subtle scroll-linked motion (hero handoff scale + spatial interior parallax)
-      const mm = gsap.matchMedia()
-      mm.add('(min-width: 64rem)', () => {
-        const heroImg = root.querySelector<HTMLElement>('[data-hero-img]')
-        const heroSection = root.querySelector<HTMLElement>('.hero-section')
-        if (heroImg && heroSection) {
-          gsap.to(heroImg, {
-            scale: 1.045,
-            yPercent: 2.5,
-            ease: 'none',
+        // 2. Architectural media mask reveals (skip elements already above/in view; play once without self-killing mid-init)
+        const mediaFrames = gsap.utils.toArray<HTMLElement>('[data-media-reveal]')
+        mediaFrames.forEach((frame) => {
+          if (frame.getBoundingClientRect().top < window.innerHeight * 0.92) return
+          const img = frame.querySelector('img')
+          const tl = gsap.timeline({
             scrollTrigger: {
-              trigger: heroSection,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: 0.6,
+              trigger: frame,
+              start: 'top 92%',
+              toggleActions: 'play none none none',
             },
           })
-        }
 
-        const parallaxImages = gsap.utils.toArray<HTMLElement>('[data-parallax-img]')
-        parallaxImages.forEach((img) => {
-          gsap.fromTo(
-            img,
-            { yPercent: -3.5 },
+          tl.fromTo(
+            frame,
+            { clipPath: 'inset(6% 0% 0% 0%)' },
             {
-              yPercent: 3.5,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: img.parentElement ?? img,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: 0.5,
-              },
+              clipPath: 'inset(0% 0% 0% 0%)',
+              duration: 0.9,
+              ease: 'power3.out',
+              clearProps: 'clipPath',
             },
           )
-        })
-      })
-    }, root)
 
-    return () => ctx.revert()
+          if (img && !img.hasAttribute('data-parallax-img')) {
+            tl.from(
+              img,
+              {
+                scale: 1.045,
+                duration: 1.05,
+                ease: 'power3.out',
+                clearProps: 'transform',
+              },
+              0,
+            )
+          }
+        })
+
+        // 3. Concise editorial text reveals — start from a legible opacity floor on mobile so
+        //    headings never appear washed out while scrolling into view
+        const revealGroups = gsap.utils.toArray<HTMLElement>('[data-reveal]')
+        revealGroups.forEach((element) => {
+          if (element.getBoundingClientRect().top < window.innerHeight * 0.96) return
+          gsap.from(element, {
+            opacity: isCompact ? 0.85 : 0.32,
+            y: isCompact ? 10 : 14,
+            duration: isCompact ? 0.36 : 0.54,
+            ease: 'power3.out',
+            clearProps: 'transform,opacity',
+            scrollTrigger: {
+              trigger: element,
+              start: isCompact ? 'top 98%' : 'top 95%',
+              toggleActions: 'play none none none',
+            },
+          })
+        })
+
+        // 4. Desktop-only subtle scroll-linked motion (conflict-free hero stage handoff + spatial parallax)
+        if (isDesktop) {
+          const heroSection = root.querySelector<HTMLElement>('.hero-section')
+          const heroParallax = root.querySelector<HTMLElement>('[data-hero-parallax]')
+          const heroHeader = root.querySelector<HTMLElement>('.hero-header')
+          if (heroSection && heroParallax) {
+            const heroExitTl = gsap.timeline({
+              scrollTrigger: {
+                trigger: heroSection,
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 0.6,
+              },
+            })
+            heroExitTl.to(
+              heroParallax,
+              {
+                scale: 1.04,
+                yPercent: 4.5,
+                ease: 'none',
+              },
+              0,
+            )
+            if (heroHeader) {
+              heroExitTl.to(
+                heroHeader,
+                {
+                  y: -16,
+                  opacity: 0.38,
+                  ease: 'none',
+                },
+                0,
+              )
+            }
+          }
+
+          const parallaxImages = gsap.utils.toArray<HTMLElement>('[data-parallax-img]')
+          parallaxImages.forEach((img) => {
+            gsap.fromTo(
+              img,
+              { yPercent: -3.5 },
+              {
+                yPercent: 3.5,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: img.parentElement ?? img,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: 0.5,
+                },
+              },
+            )
+          })
+        }
+      },
+      root,
+    )
+
+    return () => mm.revert()
   }, [])
 
   function handleNavClick() {
@@ -310,12 +352,12 @@ export function App() {
       </header>
 
       <main id="main-content" tabIndex={-1}>
-        {/* 1. HERO */}
+        {/* 1. HERO — V3-004A Monumental Editorial Prototype */}
         <section className="hero-section" aria-labelledby="hero-headline">
-          <div className="container">
+          <div className="container hero-top">
             <div className="hero-header">
               <div className="hero-title-block">
-                <p className="eyebrow" data-hero-reveal>
+                <p className="eyebrow hero-eyebrow" data-hero-reveal>
                   {heroContent.eyebrow}
                 </p>
                 <h1 id="hero-headline" className="hero-headline" data-hero-reveal>
@@ -345,13 +387,16 @@ export function App() {
                 </a>
               </div>
             </div>
+            <div className="hero-hairline" aria-hidden="true" data-hero-rule />
+          </div>
 
-            <figure className="hero-figure">
-              <div className="media-frame media-frame-hero" data-hero-frame>
+          <figure className="hero-figure">
+            <div className="media-frame media-frame-hero" data-hero-frame>
+              <div className="hero-parallax-stage" data-hero-parallax>
                 <img
                   src={heroContent.image}
                   srcSet={heroContent.imageSrcSet}
-                  sizes="(max-width: 767px) 94vw, (max-width: 1440px) 91vw, 1376px"
+                  sizes="100vw"
                   alt={heroContent.imageAlt}
                   width={heroContent.width}
                   height={heroContent.height}
@@ -361,11 +406,12 @@ export function App() {
                   data-hero-img
                 />
               </div>
-              <figcaption className="media-caption" data-hero-reveal>
-                {heroContent.caption}
-              </figcaption>
-            </figure>
-          </div>
+            </div>
+            <figcaption className="container hero-caption-bar" data-hero-caption>
+              <span className="hero-caption-text">{heroContent.caption}</span>
+              <span className="hero-caption-datum">16 × 8 m · 3.2 m clear height</span>
+            </figcaption>
+          </figure>
         </section>
 
         {/* 2. PHILOSOPHY */}
