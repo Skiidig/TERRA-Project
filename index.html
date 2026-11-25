@@ -27,9 +27,17 @@
     <link
       rel="preload"
       as="image"
-      type="image/webp"
-      href="/images/hero.webp"
-      imagesrcset="/images/hero-800w.webp 800w, /images/hero.webp 1376w"
+      type="image/avif"
+      media="(max-width: 47.99rem)"
+      href="/images/hero-v3c-mobile.avif"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      type="image/avif"
+      media="(min-width: 48rem)"
+      imagesrcset="/images/hero-v3c-1920w.avif 1920w, /images/hero-v3c-2752w.avif 2752w"
       imagesizes="100vw"
       fetchpriority="high"
     />

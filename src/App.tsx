@@ -393,18 +393,38 @@ export function App() {
           <figure className="hero-figure">
             <div className="media-frame media-frame-hero" data-hero-frame>
               <div className="hero-parallax-stage" data-hero-parallax>
-                <img
-                  src={heroContent.image}
-                  srcSet={heroContent.imageSrcSet}
-                  sizes="100vw"
-                  alt={heroContent.imageAlt}
-                  width={heroContent.width}
-                  height={heroContent.height}
-                  fetchPriority="high"
-                  decoding="async"
-                  className="media-img"
-                  data-hero-img
-                />
+                <picture className="media-picture">
+                  <source
+                    media="(max-width: 47.99rem)"
+                    type="image/avif"
+                    srcSet={heroContent.mobileAvif}
+                  />
+                  <source
+                    media="(max-width: 47.99rem)"
+                    type="image/webp"
+                    srcSet={heroContent.mobileWebp}
+                  />
+                  <source
+                    type="image/avif"
+                    srcSet={heroContent.desktopAvifSrcSet}
+                    sizes="100vw"
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet={heroContent.desktopWebpSrcSet}
+                    sizes="100vw"
+                  />
+                  <img
+                    src={heroContent.image}
+                    alt={heroContent.imageAlt}
+                    width={heroContent.width}
+                    height={heroContent.height}
+                    fetchPriority="high"
+                    decoding="async"
+                    className="media-img"
+                    data-hero-img
+                  />
+                </picture>
               </div>
             </div>
             <figcaption className="container hero-caption-bar" data-hero-caption>
@@ -423,17 +443,24 @@ export function App() {
           <div className="container philosophy-grid">
             <figure className="philosophy-media">
               <div className="media-frame media-frame-philosophy" data-media-reveal>
-                <img
-                  src={philosophyContent.image}
-                  srcSet={philosophyContent.imageSrcSet}
-                  sizes="(max-width: 1023px) 92vw, 52vw"
-                  alt={philosophyContent.imageAlt}
-                  width={philosophyContent.width}
-                  height={philosophyContent.height}
-                  loading="lazy"
-                  decoding="async"
-                  className="media-img"
-                />
+                <picture className="media-picture">
+                  <source
+                    type="image/avif"
+                    srcSet={philosophyContent.imageAvifSrcSet}
+                    sizes="(max-width: 1023px) 92vw, 52vw"
+                  />
+                  <img
+                    src={philosophyContent.image}
+                    srcSet={philosophyContent.imageSrcSet}
+                    sizes="(max-width: 1023px) 92vw, 52vw"
+                    alt={philosophyContent.imageAlt}
+                    width={philosophyContent.width}
+                    height={philosophyContent.height}
+                    loading="lazy"
+                    decoding="async"
+                    className="media-img"
+                  />
+                </picture>
               </div>
             </figure>
 
@@ -492,17 +519,26 @@ export function App() {
                   className={`material-study${index === 1 ? ' is-offset' : ''}`}
                 >
                   <div className="media-frame media-frame-portrait" data-media-reveal>
-                    <img
-                      src={material.image}
-                      srcSet={material.imageSrcSet}
-                      sizes="(max-width: 767px) 92vw, 29vw"
-                      alt={material.alt}
-                      width={material.width}
-                      height={material.height}
-                      loading="lazy"
-                      decoding="async"
-                      className="media-img media-img-interactive"
-                    />
+                    <picture className="media-picture">
+                      {material.imageAvifSrcSet ? (
+                        <source
+                          type="image/avif"
+                          srcSet={material.imageAvifSrcSet}
+                          sizes="(max-width: 767px) 92vw, 29vw"
+                        />
+                      ) : null}
+                      <img
+                        src={material.image}
+                        srcSet={material.imageSrcSet}
+                        sizes="(max-width: 767px) 92vw, 29vw"
+                        alt={material.alt}
+                        width={material.width}
+                        height={material.height}
+                        loading="lazy"
+                        decoding="async"
+                        className="media-img media-img-interactive"
+                      />
+                    </picture>
                   </div>
                   <div className="material-copy" data-reveal>
                     <div className="material-meta">
@@ -543,18 +579,25 @@ export function App() {
 
           <figure className="spatial-bleed-figure">
             <div className="media-frame media-frame-spatial" data-media-reveal>
-              <img
-                src={spatialContent.image}
-                srcSet={spatialContent.imageSrcSet}
-                sizes="100vw"
-                alt={spatialContent.imageAlt}
-                width={spatialContent.width}
-                height={spatialContent.height}
-                loading="lazy"
-                decoding="async"
-                className="media-img media-img-parallax"
-                data-parallax-img
-              />
+              <picture className="media-picture">
+                <source
+                  type="image/avif"
+                  srcSet={spatialContent.imageAvifSrcSet}
+                  sizes="100vw"
+                />
+                <img
+                  src={spatialContent.image}
+                  srcSet={spatialContent.imageSrcSet}
+                  sizes="100vw"
+                  alt={spatialContent.imageAlt}
+                  width={spatialContent.width}
+                  height={spatialContent.height}
+                  loading="lazy"
+                  decoding="async"
+                  className="media-img media-img-parallax"
+                  data-parallax-img
+                />
+              </picture>
             </div>
           </figure>
 
@@ -588,17 +631,24 @@ export function App() {
 
             <figure className="closing-figure">
               <div className="media-frame media-frame-closing" data-media-reveal>
-                <img
-                  src={closingContent.image}
-                  srcSet={closingContent.imageSrcSet}
-                  sizes="(max-width: 767px) 94vw, (max-width: 1440px) 91vw, 1376px"
-                  alt={closingContent.imageAlt}
-                  width={closingContent.width}
-                  height={closingContent.height}
-                  loading="lazy"
-                  decoding="async"
-                  className="media-img"
-                />
+                <picture className="media-picture">
+                  <source
+                    type="image/avif"
+                    srcSet={closingContent.imageAvifSrcSet}
+                    sizes="(max-width: 767px) 94vw, (max-width: 1440px) 91vw, 1376px"
+                  />
+                  <img
+                    src={closingContent.image}
+                    srcSet={closingContent.imageSrcSet}
+                    sizes="(max-width: 767px) 94vw, (max-width: 1440px) 91vw, 1376px"
+                    alt={closingContent.imageAlt}
+                    width={closingContent.width}
+                    height={closingContent.height}
+                    loading="lazy"
+                    decoding="async"
+                    className="media-img"
+                  />
+                </picture>
               </div>
             </figure>
           </div>

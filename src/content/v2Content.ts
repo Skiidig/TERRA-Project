@@ -14,6 +14,7 @@ export interface MaterialStudy {
   readonly role: string
   readonly description: string
   readonly image: string
+  readonly imageAvifSrcSet?: string
   readonly imageSrcSet: string
   readonly width: number
   readonly height: number
@@ -43,10 +44,13 @@ export const heroContent = {
   supportingLine: 'A quieter way to inhabit the world.',
   ctaLabel: 'Explore the architecture',
   ctaHref: '#philosophy',
-  image: '/images/hero.webp',
-  imageSrcSet: '/images/hero-800w.webp 800w, /images/hero.webp 1376w',
-  width: 1376,
-  height: 768,
+  image: '/images/hero-v3c-1920w.webp',
+  desktopAvifSrcSet: '/images/hero-v3c-1920w.avif 1920w, /images/hero-v3c-2752w.avif 2752w',
+  desktopWebpSrcSet: '/images/hero-v3c-1920w.webp 1920w, /images/hero-v3c-2752w.webp 2752w',
+  mobileAvif: '/images/hero-v3c-mobile.avif',
+  mobileWebp: '/images/hero-v3c-mobile.webp',
+  width: 2752,
+  height: 1536,
   imageAlt:
     'Conceptual exterior visualization of the single-story TERRA pavilion with a cantilevered pale concrete roof, vertical oak louvers, frameless glass, and a still reflecting pool set in coastal meadow grasses.',
   caption: 'Single-story coastal pavilion study · Conceptual visualization',
@@ -59,8 +63,9 @@ export const philosophyContent = {
     'TERRA begins by removing everything that interrupts daylight, horizon, and stillness. A single horizontal roof plane anchors the volume while deep perimeter overhangs soften the sun before it reaches the glass.',
     'Every line serves proportion and calm. Nothing is added for ornament; every junction is resolved so the eye moves effortlessly from interior timber to coastal meadow.',
   ],
-  image: '/images/philosophy.webp',
-  imageSrcSet: '/images/philosophy-760w.webp 760w, /images/philosophy.webp 1200w',
+  image: '/images/philosophy-v3-1200w.webp',
+  imageAvifSrcSet: '/images/philosophy-v3-760w.avif 760w, /images/philosophy-v3-1200w.avif 1200w',
+  imageSrcSet: '/images/philosophy-v3-760w.webp 760w, /images/philosophy-v3-1200w.webp 1200w',
   width: 1200,
   height: 896,
   imageAlt:
@@ -84,8 +89,11 @@ export const materialityContent = {
       role: 'Structure & Overhang',
       description:
         'Warm limestone-aggregate concrete cast against fine timber formwork, finished with razor-sharp recessed shadow reveals.',
-      image: '/images/material-concrete.webp',
-      imageSrcSet: '/images/material-concrete-540w.webp 540w, /images/material-concrete.webp 896w',
+      image: '/images/material-concrete-v3-896w.webp',
+      imageAvifSrcSet:
+        '/images/material-concrete-v3-540w.avif 540w, /images/material-concrete-v3-896w.avif 896w',
+      imageSrcSet:
+        '/images/material-concrete-v3-540w.webp 540w, /images/material-concrete-v3-896w.webp 896w',
       width: 896,
       height: 1200,
       alt: 'Close-up architectural material study of warm pale board-formed concrete with subtle timber formwork grain and a sharp recessed horizontal shadow joint.',
@@ -96,8 +104,11 @@ export const materialityContent = {
       role: 'Filtered Envelope',
       description:
         'Vertically milled timber louvers that temper low morning glare while introducing warmth, rhythm, and natural acoustic softness.',
-      image: '/images/material-timber.webp',
-      imageSrcSet: '/images/material-timber-540w.webp 540w, /images/material-timber.webp 896w',
+      image: '/images/material-timber-v3-896w.webp',
+      imageAvifSrcSet:
+        '/images/material-timber-v3-540w.avif 540w, /images/material-timber-v3-896w.avif 896w',
+      imageSrcSet:
+        '/images/material-timber-v3-540w.webp 540w, /images/material-timber-v3-896w.webp 896w',
       width: 896,
       height: 1200,
       alt: 'Close-up architectural material study of precision-milled vertical rift-cut pale oak timber louvers catching soft diagonal daylight.',
@@ -169,8 +180,9 @@ export const spatialContent = {
   headline: 'Space to breathe.',
   intro:
     'Inside, architecture recedes into light, horizon, and proportion—leaving room only for presence.',
-  image: '/images/spatial.webp',
-  imageSrcSet: '/images/spatial-800w.webp 800w, /images/spatial.webp 1376w',
+  image: '/images/spatial-v3-1376w.webp',
+  imageAvifSrcSet: '/images/spatial-v3-800w.avif 800w, /images/spatial-v3-1376w.avif 1376w',
+  imageSrcSet: '/images/spatial-v3-800w.webp 800w, /images/spatial-v3-1376w.webp 1376w',
   width: 1376,
   height: 768,
   imageAlt:
@@ -193,8 +205,9 @@ export const closingContent = {
   supportingLine:
     'A quiet architectural study in proportion, honest materiality, and calm presence.',
   ctaLabel: 'Return to top',
-  image: '/images/closing.webp',
-  imageSrcSet: '/images/closing-800w.webp 800w, /images/closing.webp 1376w',
+  image: '/images/closing-v3-1376w.webp',
+  imageAvifSrcSet: '/images/closing-v3-800w.avif 800w, /images/closing-v3-1376w.avif 1376w',
+  imageSrcSet: '/images/closing-v3-800w.webp 800w, /images/closing-v3-1376w.webp 1376w',
   width: 1376,
   height: 768,
   imageAlt:

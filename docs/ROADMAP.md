@@ -5,10 +5,14 @@
 | Task | Phase | Status |
 | --- | --- | --- |
 | V3-001 | Discovery, creative direction & technical feasibility | Complete (approved) |
-| V3-002 | First-scroll performance, versioned caching & mobile polish | Complete (ready for owner review) |
-| V3-003 | Master Pavilion V3 lookdev (`pavilion-v3`, coastal site & PBR shaders) | Planned |
-| V3-004 | Hero cinematic refinement & editorial choreography | Planned |
-| V3-005 | Unified architectural photography suite (retire AI placeholders) | Planned |
+| V3-002 | First-scroll performance, versioned caching & mobile polish | Complete (approved) |
+| V3-002B | Isolated Vercel Preview CDN & live motion validation (`1a7359c`) | Complete (approved) |
+| V3-003A/B | Master Pavilion V3 Blender lookdev (`pavilion-v3`, preserved for technical animation) | Complete (V2 photography retained) |
+| V3-004A | Monumental Editorial Hero layout & motion refinement (`a50517e`) | Complete (approved) |
+| V3-004B | High-fidelity responsive editorial image delivery (AVIF/WebP + mobile art direction) | Complete (approved) |
+| V3-004C | Hero super-resolution PoC & integration (`realesrgan-x4plus` 2752×1536, minor artificial sharpness noted) | Complete (approved) |
+| V3-004D | Next pending V3 refinement task (paused at end-of-day checkpoint) | Pending (next) |
+| V3-005 | Unified architectural photography / remaining section visual polish | Planned |
 | V3-006 | Design Anatomy V3 studio sequence refresh | Planned |
 | V3-007 | Final multi-viewport QA, performance audit & release prep | Planned |
 

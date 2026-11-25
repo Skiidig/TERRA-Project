@@ -1,5 +1,36 @@
 # Handoff
 
+## TERRA V3 · V3-004A/B/C Hero refinement, responsive delivery & super-resolution (approved end-of-day checkpoint)
+
+Completed and received owner approval for the **Hybrid Cinematic Experience** Hero refinement (`V3-004A` committed at `a50517e`), editorial responsive image delivery (`V3-004B`), and Hero super-resolution (`V3-004C`) on `experiment/terra-v3-cinematic`. Development is paused at this checkpoint; **V3-004D** is the next pending task (not started). Production `origin/main` (`bead7ef`), local `main` (`bfe2c91`), and the remote V3 preview branch (`origin/experiment/terra-v3-cinematic` @ `1a7359c`) remain untouched.
+
+- **V3-004A — Monumental Editorial Hero (`a50517e`, approved)**:
+  - Elevated the Hero into a full-bleed architectural opening with a tight editorial header band (`Architecture, distilled.` + italic *A quieter way to inhabit the world.* + hairline rule + full-bleed pavilion frame + architectural datum bar `16 × 8 m · 3.2 m clear height`) and coordinated GSAP entrance + desktop scroll handoff (`scale: 1.04`, `yPercent: 4.5`) while preserving `LCP` visibility (`opacity: 1` immediately), native scroll, reduced motion, and `0` Anatomy sequence requests at Hero.
+- **V3-004B — High-Fidelity Responsive Editorial Delivery (approved)**:
+  - Recovered all 7 pre-WebP `.jpg` originals from Git commit `f39350c` into external scratch storage (`scratch/originals/`).
+  - Upgraded `spatial`, `closing`, `philosophy`, `material-concrete`, and `material-timber` from original `.jpg` masters with restrained selective micro-sharpening (`UnsharpMask(radius=0.9, percent=55, threshold=3)`) into versioned `-v3` `<picture>` **AVIF primary + WebP fallback** pairs (`public/images/*-v3-*.avif/.webp`). Retained `material-glass.webp` (`42.00 dB`, `30.2 KiB`) unchanged after 200% inspection confirmed negligible gain.
+  - Added `.media-picture { display: contents; }` in `src/style.css` so `<picture>` introduces zero layout shift. Preserved `hero.webp` untouched for `og:image` / `twitter:image` metadata and retained `hero-v3-*` files as the V3-004B rollback baseline.
+- **V3-004C — Hero Super-Resolution Proof of Concept & Integration (approved, minor artificial sharpness noted)**:
+  - **Portable Tool & Verification (Outside Git)**: Official Windows portable release `realesrgan-ncnn-vulkan` `v0.2.5.0` (`realesrgan-ncnn-vulkan-20220424-windows.zip`, `45,474,481 B`, SHA-256 `ABC02804E17982A3BE33675E4D471E91EA374E65B70167ABC09E31ACB412802D`) extracted to external scratch storage (`C:\Users\Skidig\.gemini\antigravity\brain\23c1df4b-1c71-43a0-a838-5437ec99dd05\scratch\realesrgan\bin\realesrgan-ncnn-vulkan.exe`). No system-wide install, PyTorch, or CUDA Toolkit added.
+  - **Reproducible Pipeline**:
+    1. Native `4×` photographic inference on `NVIDIA GeForce RTX 4060` via Vulkan (`10.29 s`): `realesrgan-ncnn-vulkan.exe -i hero.jpg -o hero_esrgan_x4plus_5504x3072.png -n realesrgan-x4plus -s 4 -f png -v` (input: recovered `f39350c` `hero.jpg`, `1376×768`).
+    2. Pure Lanczos downsampling to `2752×1536` (**Candidate A**, zero post-sharpening; selected over Candidate B `+ UnsharpMask` and Candidate C `65/35 blend`).
+    3. Responsive encoding via Pillow `13.0.0` (`speed=4` AVIF / `method=6` WebP):
+       - Desktop 1x: `hero-v3c-1920w.avif` (`1920×1072`, `q=76`, `249.6 KiB`) / `.webp` (`q=86`, `292.4 KiB`).
+       - Desktop HiDPI: `hero-v3c-2752w.avif` (`2752×1536`, `q=70`, `375.4 KiB`) / `.webp` (`q=82`, `442.1 KiB`).
+       - Mobile Art-Directed Portrait Crop (matching `object-position: 44% 55%`, cropped `1280×1536` at `x=648..1928` → Lanczos `800×960`): `hero-v3c-mobile.avif` (`q=76`, `85.3 KiB`) / `.webp` (`q=86`, `99.8 KiB`).
+  - **Preload & Markup Alignment**: Media-matched `<link rel="preload" as="image" type="image/avif">` in `index.html` paired with `<picture>` in `src/App.tsx` and `src/content/v2Content.ts`.
+  - **Owner Feedback**: Approved V3-004B and V3-004C for checkpointing, noting minor artificial sharpness inherent to neural super-resolution on close inspection.
+- **Measured Performance Results (Local Production Build `http://localhost:4175/`, Edge CDP, clean cache)**:
+  - **Desktop `1440×900` DPR 1**: Selected `hero-v3c-1920w.avif` (`249.6 KiB`, `0.75×` supersampled), `0` duplicate Hero requests, `LCP 268 ms`, `CLS 0.0018`, `0` Anatomy sequence requests at Hero.
+  - **HiDPI Desktop `1440×900` DPR 2**: Selected `hero-v3c-2752w.avif` (`375.4 KiB`, `1.046×` physical scale vs `2.093×` prior), `0` duplicate Hero requests, `LCP 136 ms`, `CLS 0.0018`, `0` Anatomy sequence requests.
+  - **Mobile `390×844` DPR 2**: Selected `hero-v3c-mobile.avif` (`85.3 KiB`, `0.977×` native 1:1 Retina vs `2.10×` in V2), `0` duplicate Hero requests, `LCP 136 ms`, `CLS 0`, `0` Anatomy sequence requests.
+  - **Regression & Build Checks**: Passed reduced motion (`lcp 132 ms`, `cls 0.0007`, `anatomyMode: reduced`, `0` sequence requests), Design Anatomy desktop playback, mobile nav drawer (`Escape` close), tall desktop (`1440×1400`) Hero isolation, `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check`.
+- **Remaining Limitations & Next Step**:
+  - Minor artificial sharpness from `realesrgan-x4plus` reconstruction remains visible at 200%+ magnification compared to native medium-format optical capture; `hero-v3c-2752w.avif` (`375.4 KiB`) slightly exceeds the `350 KiB` soft target on 2x HiDPI desktop in exchange for 4× pixel count (`136 ms` LCP).
+  - Rollback assets (`hero-v3-*` and legacy V2 WebPs) are intentionally retained in `public/images/` until final cleanup; remote V3 Vercel preview remains at `1a7359c` (not pushed); physical iOS Safari and Android Chrome testing remains pending.
+  - **Next Pending Task**: **V3-004D** (paused; do not start until explicitly authorized).
+
 ## TERRA V3 · V3-003B photographic refinement (ready for owner visual review)
 
 Codex refined the saved 003A master in `D:\GitHub\terra-v3-assets\pavilion-v3\v3-003b`. The 003A package remains in place. A hash-verified checkpoint preserves its master, scripts, and configuration. The 003B package includes its editable master, draft stills, three-way comparisons, render receipts, and a verified CC0 manifest.
