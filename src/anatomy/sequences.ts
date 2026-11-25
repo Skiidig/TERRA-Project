@@ -27,12 +27,14 @@ export interface AnatomyManifest {
 export const COMPACT_VIEW =
   '(max-width: 47.99rem), (hover: none) and (pointer: coarse) and (max-height: 35rem)'
 
-export const MANIFEST_URL = '/anatomy-sequence/manifest.json'
+export const ANATOMY_SEQUENCE_VERSION = 'v2-004b'
+export const ANATOMY_SEQUENCE_BASE = `/anatomy-sequence/${ANATOMY_SEQUENCE_VERSION}`
+export const MANIFEST_URL = `${ANATOMY_SEQUENCE_BASE}/manifest.json`
 
 export function getPosterUrl(compact: boolean): string {
   return compact
-    ? '/anatomy-sequence/mobile/frame-000.webp'
-    : '/anatomy-sequence/desktop/frame-000.webp'
+    ? `${ANATOMY_SEQUENCE_BASE}/mobile/frame-000.webp`
+    : `${ANATOMY_SEQUENCE_BASE}/desktop/frame-000.webp`
 }
 
 export function getPosterDimensions(compact: boolean): { width: number; height: number } {

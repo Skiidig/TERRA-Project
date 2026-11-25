@@ -4,8 +4,9 @@
 
 TERRA is an independent minimalist architectural product experience built with Vite, React, TypeScript, GSAP, and plain CSS.
 
-- **Active V2 (`experiment/terra-v2-design`)**: Editorial architectural website leading with typography, proportion, and photography, enhanced selectively by a scroll-controlled pre-rendered Blender Cycles pavilion assembly in **Design Anatomy** (2D canvas + responsive WebP sequences, zero runtime WebGL).
-- **Preserved V1 (`main` @ `7bd2201`)**: Real-time procedural WebGL 2 diorama (Three.js / React Three Fiber / Drei), currently deployed at [https://terra-project-six.vercel.app](https://terra-project-six.vercel.app).
+- **Active V3 Refinement (`experiment/terra-v3-cinematic`)**: Cinematic refinement work building on V2 — starting with cold-scroll performance optimization, versioned immutable sequence caching (`vercel.json`), and mobile polish.
+- **Deployed Production V2 (`main` @ `bfe2c91` / `origin/main` @ `bead7ef`, preserved on `experiment/terra-v2-design`)**: Editorial architectural website leading with typography, proportion, and photography, enhanced selectively by a scroll-controlled pre-rendered Blender Cycles pavilion assembly in **Design Anatomy** (2D canvas + responsive WebP sequences, zero runtime WebGL), currently live at [https://terra-project-six.vercel.app](https://terra-project-six.vercel.app).
+- **Preserved V1 Rollback Reference (`7bd2201`)**: Real-time procedural WebGL 2 diorama (Three.js / React Three Fiber / Drei).
 
 ---
 
@@ -53,19 +54,20 @@ Vite emits static production files to `dist/`.
 
 ## Animation Asset Organization & Responsive Loading
 
-Production Design Anatomy frames live under `public/anatomy-sequence/` and are copied verbatim into `dist/anatomy-sequence/`:
+Production Design Anatomy frames live under a versioned directory (`public/anatomy-sequence/v2-004b/`) and are copied verbatim into `dist/anatomy-sequence/v2-004b/`:
 
 | Variant | Resolution | Frames | Total Size | Profile | Breakpoint Selection |
 | --- | --- | ---: | ---: | --- | --- |
 | Desktop | `1600 × 1000` | `96` | `7.68 MiB` (`8,054,676 B`) | WebP `q86-s12` | `>= 768 px` non-compact viewports |
 | Mobile | `896 × 560` | `48` | `1.994 MiB` (`2,091,116 B`) | WebP `q84-s6` | `< 768 px` or coarse-pointer landscape (`<= 35 rem` height) |
-| Runtime Manifest | — | `144` entries | `13.5 kB` (`13,783 B`) | JSON | `/anatomy-sequence/manifest.json` |
+| Runtime Manifest | — | `144` entries | `13.5 kB` (`13,783 B`) | JSON | `/anatomy-sequence/v2-004b/manifest.json` |
 
-### Loading & Memory Strategy
-- **Zero Sequence Preload at Hero**: An `IntersectionObserver` (`900 px` margin) defers manifest and frame fetches until Design Anatomy approaches the viewport (or immediately on direct `/#anatomy` visits).
-- **Single-Variant Isolation**: Only `desktop/` or `mobile/` frames are ever fetched for the active viewport.
-- **Bounded Memory**: Decoded `ImageBitmap` cache is capped at `8` desktop frames (`48.83 MiB` peak RGBA) and `10` mobile frames (`19.14 MiB` peak RGBA) with explicit `bitmap.close()` eviction; compressed `Blob` LRU is bounded to `9 MiB` desktop / `4 MiB` mobile (`0` duplicate HTTP requests).
-- **Resilience & Reduced Motion**: Last valid frame holds during loading; failed frames retry twice automatically before exposing an inline `Reload frame` control; `prefers-reduced-motion: reduce` skips manifest/sequence downloads and displays the assembled poster (`frame-000.webp`) with full manual layer-tab navigation.
+### Loading, Caching & Memory Strategy
+- **Zero Sequence Preload at Hero**: Intent-gated arming (`scrollY >= 40`, `/#anatomy`, or immediate on-screen intersection paired with approach `IntersectionObserver`) defers poster, manifest, and frame fetches during initial Hero load—even on tall desktop viewports (`1440×1400`).
+- **Coarse-to-Fine Compressed Prefetch & Decoupled Queues**: Once armed and after the responsive poster loads, an idle background prefetcher populates only the bounded compressed `Blob` LRU (`9 MiB` desktop / `4 MiB` mobile) in coarse-to-fine order (`8 → 4 → 2 → 1`) using `4` desktop / `2` mobile fetch lanes while keeping `ImageBitmap` decoding (`2` lanes) strictly on active targets. Respects `Save-Data` / `2g` by disabling background prefetch.
+- **Single-Variant Isolation & Versioned Caching**: Only `desktop/` or `mobile/` frames are fetched for the active viewport. `vercel.json` sets `Cache-Control: public, max-age=31536000, immutable` strictly on versioned `/anatomy-sequence/v2-004b/(.*)` while keeping mutable `/images/*` and `/fonts/*` on conservative `stale-while-revalidate` rules.
+- **Strict Bounded Memory**: Pre-decode eviction caps live decoded `ImageBitmap`s strictly at `8` desktop frames (`48.83 MiB` peak RGBA) and `10` mobile frames (`19.14 MiB` peak RGBA) with explicit `bitmap.close()` eviction.
+- **Resilience & Reduced Motion**: Last valid frame holds during loading (with monotonic intermediate bridge decoding on slow links); failed frames retry twice automatically before exposing an inline `Reload frame` control; `prefers-reduced-motion: reduce` skips manifest/sequence downloads and displays the assembled poster (`frame-000.webp`) with full manual layer-tab navigation.
 
 ---
 

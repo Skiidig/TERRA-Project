@@ -100,29 +100,94 @@ export function DesignAnatomySection() {
     }
   }, [])
 
-  // Section-aware progressive arming: zero animation downloads during initial Hero load
+  // Intent-gated progressive arming: guarantees zero sequence/poster transfer during initial Hero load
+  // (even on tall desktop viewports), while arming early once the visitor scrolls past the Hero or
+  // navigates directly to #anatomy so the responsive poster and coarse frames arrive before entry.
   useEffect(() => {
-    if (armed || reducedMotion) return
+    if (armed) return
     const section = sectionRef.current
     if (!section) return
 
-    if (typeof IntersectionObserver !== 'function') {
-      setArmed(true)
-      return
+    let engaged = window.scrollY >= 40 || window.location.hash === '#anatomy'
+    let nearSection = false
+
+    const tryArm = () => {
+      if (engaged && nearSection) {
+        setArmed(true)
+      }
     }
 
-    const observer = new IntersectionObserver(
+    const onScrollOrHash = () => {
+      if (window.scrollY >= 40 || window.location.hash === '#anatomy') {
+        engaged = true
+        tryArm()
+      }
+    }
+
+    window.addEventListener('scroll', onScrollOrHash, { passive: true })
+    window.addEventListener('hashchange', onScrollOrHash)
+
+    if (typeof IntersectionObserver !== 'function') {
+      nearSection = true
+      tryArm()
+      return () => {
+        window.removeEventListener('scroll', onScrollOrHash)
+        window.removeEventListener('hashchange', onScrollOrHash)
+      }
+    }
+
+    // Tight viewport observer: if Anatomy is genuinely on-screen immediately, arm without waiting
+    const visibleObserver = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
+          engaged = true
+          nearSection = true
           setArmed(true)
-          observer.disconnect()
         }
       },
-      { rootMargin: '900px 0px 900px 0px' },
+      { rootMargin: '120px 0px 120px 0px' },
     )
-    observer.observe(section)
-    return () => observer.disconnect()
-  }, [armed, reducedMotion])
+    visibleObserver.observe(section)
+
+    // Wide approach observer: pairs strictly with scroll intent (scrollY >= 40) so initial Hero
+    // load always transfers 0 B even on tall desktop viewports, while arming early during
+    // Philosophy/Materiality reading so the responsive poster arrives well before #anatomy enters.
+    const approachMargin = compact ? '4200px 0px 900px 0px' : '2400px 0px 900px 0px'
+    const approachObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          nearSection = true
+          tryArm()
+        }
+      },
+      { rootMargin: approachMargin },
+    )
+    approachObserver.observe(section)
+
+    return () => {
+      window.removeEventListener('scroll', onScrollOrHash)
+      window.removeEventListener('hashchange', onScrollOrHash)
+      visibleObserver.disconnect()
+      approachObserver.disconnect()
+    }
+  }, [armed, compact])
+
+  // Prioritize the responsive poster as soon as Anatomy arms (post-Hero intent only),
+  // preventing blank mobile stages on slower connections without impacting initial Hero LCP.
+  useEffect(() => {
+    if (!armed) return
+    const href = getPosterUrl(compact)
+    const link = document.createElement('link')
+    link.rel = 'preload'
+    link.as = 'image'
+    link.type = 'image/webp'
+    link.href = href
+    link.setAttribute('fetchpriority', 'high')
+    document.head.appendChild(link)
+    return () => {
+      link.remove()
+    }
+  }, [armed, compact])
 
   // Load only the manifest once armed and NOT in reduced-motion mode
   useEffect(() => {
@@ -465,7 +530,8 @@ export function DesignAnatomySection() {
                   alt={anatomyContent.imageAlt}
                   width={posterDims.width}
                   height={posterDims.height}
-                  loading="lazy"
+                  loading={armed ? 'eager' : 'lazy'}
+                  fetchPriority={armed ? 'high' : 'auto'}
                   decoding="async"
                   className="anatomy-poster"
                 />

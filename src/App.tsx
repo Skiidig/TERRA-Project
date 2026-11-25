@@ -74,7 +74,7 @@ export function App() {
       if (closingEl) {
         const headerHeight = document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 64
         const rect = closingEl.getBoundingClientRect()
-        setHeaderOnDark(rect.top <= headerHeight + 4)
+        setHeaderOnDark(rect.top <= headerHeight + 16)
       }
     }
     onScroll()
@@ -177,19 +177,21 @@ export function App() {
         }
       })
 
-      // 3. Concise editorial text reveals
+      // 3. Concise editorial text reveals — start from a legible opacity floor on mobile so
+      //    headings never appear washed out while scrolling into view
+      const isCompactViewport = window.matchMedia('(max-width: 47.99rem)').matches
       const revealGroups = gsap.utils.toArray<HTMLElement>('[data-reveal]')
       revealGroups.forEach((element) => {
-        if (element.getBoundingClientRect().top < window.innerHeight * 0.93) return
+        if (element.getBoundingClientRect().top < window.innerHeight * 0.96) return
         gsap.from(element, {
-          opacity: 0,
-          y: 16,
-          duration: 0.68,
+          opacity: isCompactViewport ? 0.85 : 0.32,
+          y: isCompactViewport ? 10 : 14,
+          duration: isCompactViewport ? 0.36 : 0.54,
           ease: 'power3.out',
           clearProps: 'transform,opacity',
           scrollTrigger: {
             trigger: element,
-            start: 'top 93%',
+            start: isCompactViewport ? 'top 98%' : 'top 95%',
             toggleActions: 'play none none none',
           },
         })
