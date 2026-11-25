@@ -1,5 +1,20 @@
 # Handoff
 
+## TERRA V2 · V2-006B final production release (complete)
+
+Released TERRA V2 to production via fast-forward merge of `experiment/terra-v2-design` into `main` (`7bd2201..bead7ef`), pushed `main` to `https://github.com/Skiidig/TERRA-Project.git`, verified Vercel deployment completion (`https://vercel.com/asta-0aa6/terra-project/26nJCQ6Sqm8zQ7fcosjJUaoAdmpH`), and completed live HTTPS smoke testing on `https://terra-project-six.vercel.app/`.
+
+- **Live Production Verification (`https://terra-project-six.vercel.app/`, Edge `158.0.4370.33` CDP, clean cache)**:
+  - **Cold Hero Load**: Desktop `1440×900` (`488,036 B`, `/images/hero.webp`, `0` manifest/sequence requests, `0` external requests, `0` failed requests, `0` console/page errors); emulated Mobile `390×844` (`429,400 B`, `/images/hero-800w.webp`, `0` manifest/sequence requests, `0` overflow).
+  - **Design Anatomy & Interactions**: Desktop loaded only `desktop/` frames (`42` frames, `0` mobile), scrubbed forward to `anatomy-tab-plinth`, reversed cleanly to `anatomy-tab-roof`, passed click + `ArrowDown` tab navigation, and triggered dark sticky header over `#closing` and footer; emulated Mobile `390×844` loaded only `mobile/` frames (`12` frames, `0` desktop), passed mobile menu open/close, and rendered exploded state cleanly.
+  - **Direct `/#anatomy` & Reduced Motion**: Fresh `/#anatomy` aligned below the `65 px` header on desktop (`scrollY: 2707`, top `64 px`) and mobile (`scrollY: 3798`, top `65 px`); `prefers-reduced-motion: reduce` fetched `0` manifest and `1` static poster with interactive tabs intact.
+  - **SEO Metadata**: Verified `<title>`, `<meta name="description">`, Open Graph (`og:title`, `og:image`), `twitter:card` (`summary_large_image`), and canonical URL (`https://terra-project-six.vercel.app/`).
+- **Rollback Instructions (Preserve History — No Force Push)**:
+  - Preserved V1 production commit: `7bd2201` (`chore: record TERRA production URL and finalize release`).
+  - Instant dashboard rollback: Promote the previous `7bd2201` deployment in the Vercel project dashboard (`asta-0aa6/terra-project`).
+  - Git rollback without history rewrite: `git revert --no-commit 7bd2201..bead7ef && git commit -m "revert: restore TERRA V1 (7bd2201)" && git push origin main`.
+- **Remaining Limitations**: Physical iOS Safari and Android Chrome device testing remains unverified (mobile checks were emulated); desktop full-sequence transfer remains `7.68 MiB` (deferred until approaching Design Anatomy); non-Anatomy homepage photography remains AI-generated conceptual visualization.
+
 ## TERRA V2 · V2-006A final QA, performance optimization & release preparation (ready for production release)
 
 Checkpointed the approved V2-005 + V2-005B animation integration (`f39350c`), optimized all homepage conceptual photography into responsive WebP variants, completed SEO/social metadata and V2 documentation updates, and ran final 6-viewport lab performance and regression QA on the production build (`http://localhost:4173/`, Edge `158.0.4370.33`). `main` remains preserved untouched at `7bd2201`.
