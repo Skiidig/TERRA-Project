@@ -1,21 +1,35 @@
 # Architecture
 
-`src/main.tsx` mounts `src/App.tsx` inside React `StrictMode`. `src/App.tsx` owns the semantic single-page architectural monograph (`header`, `nav`, skip-link, hero, integrated stage wrapper, concept narrative, materiality ledger, conceptual specifications, and closing colophon) backed by typed conceptual copy in `src/content/editorial.ts` and light-only monograph tokens in `src/style.css`. Self-hosted Latin WOFF2 subsets for Cormorant Garamond and Manrope live in `public/fonts/` alongside their SIL OFL 1.1 license notices.
+TERRA has two distinct architectural generations preserved in Git:
 
-`src/SceneViewport.tsx` owns one persistent responsive `<Canvas>`, scene lighting, `OrbitControls`, and WebGL fallbacks. The Canvas renders on demand with DPR bounded to 1–1.5. The Canvas event target inherits `pan-y` in Browse and `none` in Explore, overriding the inline value written by OrbitControls.
+- **Active V2 (`experiment/terra-v2-design`)** — Minimalist editorial architectural product experience with a pre-rendered Blender Cycles image-sequence assembly in Design Anatomy (2D Canvas, zero runtime WebGL).
+- **Preserved V1 (`main` @ `7bd2201`)** — Editorial architectural monograph with a persistent real-time Three.js / React Three Fiber WebGL 2 diorama (`src/SceneViewport.tsx`, `src/cinematicCamera.ts`, `src/VillaBlockout.tsx`, `src/VillaMaterials.ts`, `src/TropicalLandscape.tsx`).
 
-`src/cinematicCamera.ts` samples a single ScrollTrigger against the native editorial anchor positions. Only Story writes the camera during browsing. Entering Explore interrupts the return tween, copies the visible target, and saves the entry pose before enabling OrbitControls. Scroll progress still updates the destination while Explore owns the camera. Exit disables the controls, clears damping, and returns around the outside of the site to the current story pose. Reduced motion removes the trigger and cuts to Arrival when leaving Explore. Both paths invalidate the demand render loop. The trigger refreshes after fonts load and cleans up with the media listeners and return tween.
+---
 
-At 1024 × 650 CSS px or larger the stage can stick beside the existing editorial content. On smaller screens the stage stays in flow with a static Arrival shot. `SceneController` widens the lens for narrow stage aspect ratios. The first camera button receives focus on entry and the Explore button regains focus on exit. Direct fragment links and reloads can restore position after React inserts the editorial DOM. Initialization failure and runtime context loss disable both entry buttons while editorial navigation stays available.
+## Active V2 Architecture (`experiment/terra-v2-design`)
 
-`src/VillaBlockout.tsx` is the replaceable model. Its root contains named Site, Foundation, Walls, Columns, Roof, Glazing, Timber screening, Interior, Terrace, and Pool groups. X spans the long façade, +Y is up, and +Z faces the terrace and pool. One world unit is approximately one meter. The site surface is Y=0 and the origin is at its center. Wall segments leave physical openings for the glazing. The upper site extrusion has a rectangular cutout above a continuous base so the pool reads as recessed, grounded by a recessed base skirt beneath the site plinth. `Interior` adds restrained, instanced architectural silhouettes (dining table, rear credenza, lounge platform, linen cushions, and a concrete divider) to provide depth behind the glazing. The eight limestone terrace pavers share a single `InstancedMesh`.
+### Application Shell & Editorial Sections
+- `src/main.tsx` mounts `src/App.tsx` inside React `StrictMode`.
+- `src/App.tsx` renders the semantic single-page layout (`skip-link`, adaptive sticky `header` + accessible mobile drawer, `Hero`, `Philosophy`, `Materiality`, `<DesignAnatomySection />`, `Spatial Experience`, `Closing`, and `footer`) backed by typed content in `src/content/v2Content.ts` and custom-property CSS in `src/style.css`.
+- Self-hosted Latin WOFF2 fonts (`Manrope` primary display/UI, `Cormorant Garamond` italic accent) live in `public/fonts/` with `0` external network requests.
+- Responsive conceptual editorial photography lives in `public/images/*.webp` with explicit dimensions, `srcSet`/`sizes`, hero `<link rel="preload" fetchpriority="high">`, and `loading="lazy"` below the fold.
+- A `useLayoutEffect` + `document.fonts.ready` alignment guard ensures direct fragment links (such as `/#anatomy`) land accurately below the sticky header without triggering GSAP `ScrollTrigger` mid-init errors.
 
-`src/VillaMaterials.ts` owns the shared standard materials for the model and disposes them with it. `src/TropicalLandscape.tsx` populates the existing beds using fixed placement and four instanced meshes for trunks, fronds (12 per palm), multi-lobed shrub clusters (3 lobes per bed cluster), and grass. The scene uses warm directional daylight and hemisphere fill with one shadow map. Glazing is a single translucent surface per pane, and the pool uses an opaque, static water surface with a recessed corner step.
+### Design Anatomy Scroll-Controlled Assembly (`src/anatomy/`)
+- **`src/anatomy/sequences.ts`** — Defines the responsive `COMPACT_VIEW` breakpoint (`(max-width: 47.99rem), (hover: none) and (pointer: coarse) and (max-height: 35rem)`), binary-search `frameAt(sequence, progress)`, poster helpers, and deduplicated `loadAnatomyManifest()` fetching `/anatomy-sequence/manifest.json`.
+- **`src/anatomy/framePlayer.ts`** — 2D `<canvas>` `createImageBitmap` renderer compositing transparent Cycles shadow-catcher WebP frames over `#EBE7DC` with a `7.5%` perimeter gradient fade (`destination-in` + `destination-over`):
+  - Bounded decoded `ImageBitmap` window (`8` desktop / `10` mobile, explicitly closed via `bitmap.close()` on eviction and teardown).
+  - Bounded compressed `Blob` LRU (`9 MiB` desktop / `4 MiB` mobile) eliminating duplicate HTTP requests.
+  - `CONCURRENCY = 2` request/decode lanes with velocity-aware stride lookahead on large desktop chases (`gap >= 12`), conservative stale-request cancellation outside the active travel span, and monotonic intermediate decoded fallback during cold fast scrubs.
+  - Last-valid-frame hold during loading, `0` draws while idle, and 2-step automatic retry backoff (`650 ms`, `1600 ms`) before surfacing inline `Reload frame` recovery.
+- **`src/anatomy/DesignAnatomySection.tsx`** — Integrates the player into a restrained native CSS `position: sticky` runway (`1120 px` desktop, `880 px` tablet, `680 px` mobile, `560 px` compact mobile; `0 px` under reduced motion or static poster fallback):
+  - **Progressive Arming**: `IntersectionObserver` (`900 px` margin) defers manifest and frame fetches until `#anatomy` approaches the viewport (or immediately on `/#anatomy`).
+  - **Adaptive Damped Playback**: Separates scroll `targetProgress` from `renderedProgress` inside an on-demand `requestAnimationFrame` loop (`tau = 65 ms` slow scrub, `85 ms` direction reversal, `115 ms` fast flick), converging exactly to `targetProgress` (`<= 0.0012` epsilon) and stopping rAF when settled (`0` idle CPU).
+  - **Accessible Layer Inspector**: Synchronizes 4 architectural strata (`01` → `04`) with displayed progress without stealing keyboard focus; explicit tab click or WAI-ARIA `tablist` keyboard navigation (`Arrow`/`Home`/`End`) smoothly scrolls to the layer's canonical coordinate (`0 / 0.32 / 0.64 / 1.00`) with an interruptible selection lock (`wheel`/`touchstart` cancels immediately).
 
-## Planned experience
+---
 
-- **Interface** — Semantic React DOM owns editorial content, navigation, controls, and fallback. One persistent React Three Fiber canvas renders the architectural scene alongside it.
-- **Scene** — The environment owns terrain, lighting, surroundings, and shared rendering settings. The villa supplies geometry and materials through a replaceable scene component, starting with procedural geometry and moving to an optimized GLB/glTF asset later.
-- **Camera** — Story, Explore, and Return explicitly transfer ownership. Arrival is available immediately as the establishing composition.
-- **Rendering** — Update framing and rendering quality for viewport and device capability. Bound pixel ratio and shadow cost, then validate quality tiers on representative devices.
-- **Fallback** — If WebGL cannot initialize or the context is lost, keep the DOM usable and provide an architectural fallback within the page.
+## Preserved V1 Architecture (`main` @ `7bd2201`)
+
+On `main`, `src/SceneViewport.tsx` hosts one persistent responsive `<Canvas>` rendering the procedural tropical modern pavilion (`src/VillaBlockout.tsx`, `src/VillaMaterials.ts`, `src/TropicalLandscape.tsx`) driven by `src/cinematicCamera.ts` (`ScrollTrigger` + `OrbitControls` Browse/Explore handoff). Those source files remain untouched on `main` and unused by the V2 entry point.

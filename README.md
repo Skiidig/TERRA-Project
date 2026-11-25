@@ -1,36 +1,35 @@
 # TERRA
 
-**An Immersive Architectural Experience** — *Where architecture meets nature.*
+**Architecture, distilled.** — *A quieter way to inhabit the world.*
 
-**Live Production**: [https://terra-project-six.vercel.app](https://terra-project-six.vercel.app)
+TERRA is an independent minimalist architectural product experience built with Vite, React, TypeScript, GSAP, and plain CSS.
 
-TERRA is an independent conceptual architectural visualization and interactive web portfolio experiment. It presents a single-story tropical modern pavilion as a calm digital architectural monograph integrated with a real-time procedural WebGL 2 diorama.
+- **Active V2 (`experiment/terra-v2-design`)**: Editorial architectural website leading with typography, proportion, and photography, enhanced selectively by a scroll-controlled pre-rendered Blender Cycles pavilion assembly in **Design Anatomy** (2D canvas + responsive WebP sequences, zero runtime WebGL).
+- **Preserved V1 (`main` @ `7bd2201`)**: Real-time procedural WebGL 2 diorama (Three.js / React Three Fiber / Drei), currently deployed at [https://terra-project-six.vercel.app](https://terra-project-six.vercel.app).
 
-## Architectural Concept
+---
 
-The study explores a single-story tropical modern pavilion framed around three conceptual design intentions:
+## Homepage Architecture (V2)
 
-- **Deep Overhang** — A `16.0 × 8.0 m` volume crowned by a `0.3 m` flat roof slab with a `1.0 m` perimeter cantilever intended to shade the glazed facade.
-- **Filtered Envelope** — Full-height glazed bays, a rear clerestory, and `13` vertical teak slats intended to moderate glare while opening visually toward the terrace and garden.
-- **Grounded Water & Plinth** — A `24.0 × 18.0 m` diorama platform stepping from the elevated interior slab across `8` jointed limestone pavers to a recessed `10.0 × 3.5 m` still pool framed by tropical planting.
+1. **Hero (`Architecture, distilled.`)** — Asymmetric editorial lockup with self-hosted `Manrope` display typography, selective `Cormorant Garamond` italic accents, and high-priority responsive WebP hero imagery (`preload` + `fetchPriority="high"`).
+2. **Philosophy (`Less form. More feeling.`)** — Asymmetric architectural detail study paired with concise prose and proportion metrics (`16 × 8 m`, `1.0 m` cantilever, `3.2 m` clear height).
+3. **Materiality (`Nothing unnecessary.`)** — Staggered 3-column close-up studies of board-formed concrete, rift-cut natural oak, and low-iron architectural glass.
+4. **Design Anatomy (`Every layer. A purpose.`)** — Restrained sticky-stage architectural separation driven by native scroll and adaptive damped playback (`65–115 ms` time constants), paired with a WAI-ARIA keyboard-accessible 4-layer inspector (`Cantilevered Roof Plane`, `Filtered Envelope`, `Structural Core & Interior`, `Grounded Plinth & Basin`).
+5. **Spatial Experience (`Space to breathe.`)** — Full-bleed interior photography with subtle desktop-only scroll parallax.
+6. **Closing & Footer (`Designed to feel different.`)** — Atmospheric dusk band with adaptive dark sticky header transition, semantic navigation, and conceptual imagery disclosure.
 
-All dimensions, materials, and interior silhouettes are conceptual and procedurally generated in code.
-
-## Experience & Features
-
-- **Architectural Monograph Editorial Shell** — Light-only warm daylight palette (`Ivory`, `Stone`, `Timber`, `Olive`, `Ink`) with self-hosted `Cormorant Garamond` and `Manrope` typography (zero external runtime requests).
-- **Four Cinematic Chapters** — On viewports `≥ 1024 × 650 px`, native scrolling drives a single GSAP `ScrollTrigger` across *01 / The Arrival*, *02 / Shelter & Shade*, *03 / Material & Texture*, and *04 / Landscape & Stillness* alongside a sticky architectural stage.
-- **Browse & Explore Modes** — Browse Mode keeps native vertical scrolling unobstructed over the stage (`touch-action: pan-y`). Selecting **Explore 3D** transfers camera ownership to `OrbitControls` with drag orbit, wheel/pinch zoom, keyboard-accessible **Rotate left / right**, **Zoom in / out**, **Reset view**, and **Done exploring** / **Escape** exit with smooth return to the active chapter.
-- **Responsive & Reduced-Motion Support** — Compact viewports (`< 1024 × 650 px`) and `prefers-reduced-motion: reduce` present a static establishing shot while preserving manual 3D exploration and disabling smooth scroll transitions.
-- **WebGL 2 Fallback** — Initialization failure or runtime `webglcontextlost` replaces the diorama with an accessible status notice and disables 3D entry buttons while keeping the entire editorial monograph readable.
+---
 
 ## Technology Stack
 
 - **Core**: Vite 7, React 19, TypeScript 5.9, plain CSS with custom properties
-- **3D & Motion**: Three.js 0.187, React Three Fiber 9, Drei 10, GSAP 3 (`ScrollTrigger`)
+- **Motion**: GSAP 3 (`ScrollTrigger`) + frame-rate-independent local `requestAnimationFrame` damping
 - **Quality**: ESLint 10, `typescript-eslint`, React `StrictMode`
+- **Legacy V1 3D Dependencies**: `three`, `@react-three/fiber`, and `@react-three/drei` remain in `package.json` for V1 compatibility on `main`, but are tree-shaken out of the V2 production bundle (`0` runtime WebGL code shipped in V2).
 
-## Local Installation & Development
+---
+
+## Local Development & Production Build
 
 Requires **Node.js 26 LTS** (`>=26 <27`) and **npm 11** (`>=11 <12`).
 
@@ -48,26 +47,44 @@ npm run build
 npm run preview -- --host localhost
 ```
 
-Vite writes static production assets to `dist/`.
+Vite emits static production files to `dist/`.
 
-## Performance Characteristics
+---
 
-Measured on the TERRA-008 production build in Microsoft Edge Headless (`ANGLE NVIDIA GeForce RTX 4060 Direct3D11`, `1152 × 920` and `1440 × 900` DPR 1):
+## Animation Asset Organization & Responsive Loading
 
-- **Rendering**: `83` draw calls and `14,688` triangles per rendered frame (including shadow pass), single persistent WebGL `<Canvas>`, demand-based rendering (`0` frames during settled idle windows), and DPR bounded to `1–1.5`.
-- **Assets**: `1,320.51 kB` minified / `381.16 kB` gzip production JS, `13.93 kB` minified / `3.32 kB` gzip CSS, and `85,832 B` total self-hosted Latin WOFF2 fonts (`0` external runtime requests).
+Production Design Anatomy frames live under `public/anatomy-sequence/` and are copied verbatim into `dist/anatomy-sequence/`:
 
-## Typography & Font Licenses
+| Variant | Resolution | Frames | Total Size | Profile | Breakpoint Selection |
+| --- | --- | ---: | ---: | --- | --- |
+| Desktop | `1600 × 1000` | `96` | `7.68 MiB` (`8,054,676 B`) | WebP `q86-s12` | `>= 768 px` non-compact viewports |
+| Mobile | `896 × 560` | `48` | `1.994 MiB` (`2,091,116 B`) | WebP `q84-s6` | `< 768 px` or coarse-pointer landscape (`<= 35 rem` height) |
+| Runtime Manifest | — | `144` entries | `13.5 kB` (`13,783 B`) | JSON | `/anatomy-sequence/manifest.json` |
 
-Self-hosted Latin WOFF2 subsets under `public/fonts/`:
+### Loading & Memory Strategy
+- **Zero Sequence Preload at Hero**: An `IntersectionObserver` (`900 px` margin) defers manifest and frame fetches until Design Anatomy approaches the viewport (or immediately on direct `/#anatomy` visits).
+- **Single-Variant Isolation**: Only `desktop/` or `mobile/` frames are ever fetched for the active viewport.
+- **Bounded Memory**: Decoded `ImageBitmap` cache is capped at `8` desktop frames (`48.83 MiB` peak RGBA) and `10` mobile frames (`19.14 MiB` peak RGBA) with explicit `bitmap.close()` eviction; compressed `Blob` LRU is bounded to `9 MiB` desktop / `4 MiB` mobile (`0` duplicate HTTP requests).
+- **Resilience & Reduced Motion**: Last valid frame holds during loading; failed frames retry twice automatically before exposing an inline `Reload frame` control; `prefers-reduced-motion: reduce` skips manifest/sequence downloads and displays the assembled poster (`frame-000.webp`) with full manual layer-tab navigation.
 
-- **Cormorant Garamond** — Licensed under the SIL Open Font License, Version 1.1 ([OFL-Cormorant-Garamond.txt](public/fonts/OFL-Cormorant-Garamond.txt)).
-- **Manrope** — Licensed under the SIL Open Font License, Version 1.1 ([OFL-Manrope.txt](public/fonts/OFL-Manrope.txt)).
+---
+
+## Editable Sources, Imagery Disclosure & Licenses
+
+- **Design Anatomy Studio Sequence**: Rendered in Blender 5.3.0 (Cycles OptiX, transparent shadow catcher blended into `#EBE7DC`) from bespoke, original editable sources stored outside Git at `D:\GitHub\terra-v2-assets\pavilion-v2` (and production render/encode scripts at `D:\GitHub\terra-v2-assets\scroll-production-v2-004b`).
+- **Conceptual Homepage Photography Disclosure**: Editorial imagery in Hero, Philosophy, Materiality, Spatial Experience, and Closing (`public/images/*.webp`) is **AI-generated conceptual architectural visualization** created for TERRA V2 and does not represent a built project.
+- **Self-Hosted Fonts (`public/fonts/`, `0` external requests)**:
+  - **Manrope** — SIL Open Font License, Version 1.1 ([OFL-Manrope.txt](public/fonts/OFL-Manrope.txt)).
+  - **Cormorant Garamond** — SIL Open Font License, Version 1.1 ([OFL-Cormorant-Garamond.txt](public/fonts/OFL-Cormorant-Garamond.txt)).
+
+---
 
 ## Known Limitations
 
-- **Physical Mobile Devices**: Automated verification covered desktop, tablet, and mobile portrait/landscape viewport simulations; physical iOS Safari and Android Chrome touch/GPU testing remains a manual pre-deployment check.
-- **Upstream Warnings**: Healthy browser runs log an upstream `THREE.Clock` deprecation warning from `@react-three/fiber@9.8.2`, and Vite reports a `> 500 kB` chunk-size notice for the combined Three.js/React/GSAP bundle.
+- **Physical Mobile Devices**: Automated verification covered desktop, tablet, and emulated mobile portrait/landscape viewports (`1440×900`, `1024×768`, `768×1024`, `390×844`, `844×390`, `320×568`); physical iOS Safari and Android Chrome touch inertia and WebP decode profiling remain unverified.
+- **Desktop Sequence Transfer Trade-off**: Full 96-frame desktop scrubbing transfers up to `7.68 MiB` (deferred until approaching Design Anatomy; initial hero load transfers `0 B` of sequence data).
+
+---
 
 ## Deployment (Vercel)
 
@@ -76,12 +93,13 @@ TERRA is a static Vite frontend with no backend, database, or environment secret
 - **Framework Preset**: `Vite`
 - **Build Command**: `npm run build`
 - **Output Directory**: `dist`
-- **Node.js Version**: `26.x` (automatically selected from `package.json` `engines.node`)
+- **Node.js Version**: `26.x` (selected from `package.json` `engines.node`)
+
+---
 
 ## Documentation
 
 - [Agent Instructions](AGENTS.md)
-- [Project Brief](docs/PROJECT_BRIEF.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Handoff Log](docs/HANDOFF.md)

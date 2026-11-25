@@ -1,5 +1,17 @@
 # Handoff
 
+## TERRA V2 · V2-006A final QA, performance optimization & release preparation (ready for production release)
+
+Checkpointed the approved V2-005 + V2-005B animation integration (`f39350c`), optimized all homepage conceptual photography into responsive WebP variants, completed SEO/social metadata and V2 documentation updates, and ran final 6-viewport lab performance and regression QA on the production build (`http://localhost:4173/`, Edge `158.0.4370.33`). `main` remains preserved untouched at `7bd2201`.
+
+- **Homepage Image Optimization (`public/images/*.webp`)**: Replaced the 7 active homepage JPEGs (`5,208,229 B` / `4.97 MiB`) and removed unused `anatomy.jpg` (`478,369 B`) with full-res `q=86` WebPs (`704,610 B` / `0.67 MiB`, `-86.5%`) paired with responsive compact WebP `srcSet` variants (`800w` / `760w` / `540w`, `267,576 B` / `0.26 MiB`, `-94.9%`). Total `public/images/` footprint dropped from `5.42 MiB` to `0.93 MiB` (`972,186 B`, `-82.9%`) with visually indistinguishable quality verified by inspection; Anatomy WebP sequences were not recompressed.
+- **Measured Lab Performance (`http://localhost:4173/`, Edge `158.0.4370.33` CDP, clean cache — lab measurements, not real-user field metrics)**:
+  - **Initial cold transfer**: Desktop `1440×900` dropped from `3.74 MiB` (`3,926,524 B`) to **`472.8 kB` (`484,150 B`, `-87.7%`)**; Mobile `390×844` dropped from `2.44 MiB` (`2,563,072 B`) to **`415.4 kB` (`425,342 B`, `-83.4%`)**.
+  - **Lab Web Vitals**: Desktop `LCP 316 ms`, `FCP 316 ms`, `CLS 0.0407`; Mobile `LCP 136 ms`, `FCP 136 ms`, `CLS 0`.
+  - **Deferred Anatomy & Idle**: `0` manifest requests, `0` sequence frames, `0 B` sequence transfer on cold hero load; `0` idle canvas draws after settling; production bundle `dist/assets/index-DFvVAGd9.css` `20.06 kB` (`4.55 kB` gzip) and `dist/assets/index-CJWqIZU-.js` `370.50 kB` (`125.37 kB` gzip).
+- **Final 6-Viewport Regression & Release Readiness**: Passed `1440×900`, `1024×768`, `768×1024`, `390×844`, `320×568`, and `844×390` mobile landscape (`0` overflow, `0` console/page errors, `0` failed requests, strict desktop/mobile sequence isolation, all 8 rendered images loaded, direct `/#anatomy` desktop/mobile alignment, `prefers-reduced-motion: reduce` static fallback, and forced `503` `Reload frame` recovery). Updated `index.html` (Open Graph, Twitter summary_large_image, canonical URL, hero WebP preload), `README.md`, `docs/ARCHITECTURE.md`, and `docs/ROADMAP.md` to clearly distinguish V1 (`main` @ `7bd2201`) from V2 (`experiment/terra-v2-design`).
+- **Remaining Limitations**: Physical iOS Safari and Android Chrome device testing remains unverified; desktop full-sequence transfer remains `7.68 MiB` (deferred until approaching Anatomy); non-Anatomy homepage imagery remains AI-generated conceptual visualization (disclosed in footer and `README.md`).
+
 ## TERRA V2 · V2-005B fast-scroll motion smoothness optimization (ready for smoothness review)
 
 Diagnosed and resolved owner-reported fast-scroll stepping (*"Ketika ngescroll cepet jadinya patah-patah, kalau scroll halus aman"*) on the production TERRA V2 homepage (`experiment/terra-v2-design`, uncommitted atop `16e0ff3`, `main` preserved at `7bd2201`). No Blender rerenders, frame-count changes, global smooth scrolling, or new dependencies were introduced.

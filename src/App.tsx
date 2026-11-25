@@ -348,9 +348,11 @@ export function App() {
               <div className="media-frame media-frame-hero" data-hero-frame>
                 <img
                   src={heroContent.image}
+                  srcSet={heroContent.imageSrcSet}
+                  sizes="(max-width: 767px) 94vw, (max-width: 1440px) 91vw, 1376px"
                   alt={heroContent.imageAlt}
-                  width={1600}
-                  height={900}
+                  width={heroContent.width}
+                  height={heroContent.height}
                   fetchPriority="high"
                   decoding="async"
                   className="media-img"
@@ -375,9 +377,11 @@ export function App() {
               <div className="media-frame media-frame-philosophy" data-media-reveal>
                 <img
                   src={philosophyContent.image}
+                  srcSet={philosophyContent.imageSrcSet}
+                  sizes="(max-width: 1023px) 92vw, 52vw"
                   alt={philosophyContent.imageAlt}
-                  width={1200}
-                  height={900}
+                  width={philosophyContent.width}
+                  height={philosophyContent.height}
                   loading="lazy"
                   decoding="async"
                   className="media-img"
@@ -442,9 +446,11 @@ export function App() {
                   <div className="media-frame media-frame-portrait" data-media-reveal>
                     <img
                       src={material.image}
+                      srcSet={material.imageSrcSet}
+                      sizes="(max-width: 767px) 92vw, 29vw"
                       alt={material.alt}
-                      width={900}
-                      height={1200}
+                      width={material.width}
+                      height={material.height}
                       loading="lazy"
                       decoding="async"
                       className="media-img media-img-interactive"
@@ -491,9 +497,11 @@ export function App() {
             <div className="media-frame media-frame-spatial" data-media-reveal>
               <img
                 src={spatialContent.image}
+                srcSet={spatialContent.imageSrcSet}
+                sizes="100vw"
                 alt={spatialContent.imageAlt}
-                width={1600}
-                height={900}
+                width={spatialContent.width}
+                height={spatialContent.height}
                 loading="lazy"
                 decoding="async"
                 className="media-img media-img-parallax"
@@ -534,9 +542,11 @@ export function App() {
               <div className="media-frame media-frame-closing" data-media-reveal>
                 <img
                   src={closingContent.image}
+                  srcSet={closingContent.imageSrcSet}
+                  sizes="(max-width: 767px) 94vw, (max-width: 1440px) 91vw, 1376px"
                   alt={closingContent.imageAlt}
-                  width={1600}
-                  height={900}
+                  width={closingContent.width}
+                  height={closingContent.height}
                   loading="lazy"
                   decoding="async"
                   className="media-img"
