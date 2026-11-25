@@ -1,5 +1,23 @@
 # Handoff
 
+## TERRA V3 · V3-003B photographic refinement (ready for owner visual review)
+
+Codex refined the saved 003A master in `D:\GitHub\terra-v3-assets\pavilion-v3\v3-003b`. The 003A package remains in place. A hash-verified checkpoint preserves its master, scripts, and configuration. The 003B package includes its editable master, draft stills, three-way comparisons, render receipts, and a verified CC0 manifest.
+
+- Tested two Hero framings and selected the 36 mm three-quarter view. Replaced the repeated clumps with instanced photographed grass variants, added scanned concrete, oak, and upholstery surfaces, reframed the glazing and lounge, and used a cooler sky for dusk.
+- Blender 5.3.0 and RTX 4060 OptiX rendered four Stage A and five Stage B proofs at 960 px wide. The reopened master passed the packed-image, pane geometry, and studio isolation checks. The inherited 41-sample assembly path retained a 6.84% minimum margin.
+- The concrete, oak, and glass studies improve on 003A. V2 still has more convincing landscape layering, glazing exposure, and architectural lighting. Retain the V2 editorial imagery in production pending owner review. Rendering stopped at draft stills.
+- The website remains on `experiment/terra-v3-cinematic` at `1a7359c`, local `main` at `bfe2c91`, and production `origin/main` at `bead7ef`.
+
+## TERRA V3 · V3-003A master pavilion (ready for owner visual review)
+
+Codex built and verified the editable master at `D:\GitHub\terra-v3-assets\pavilion-v3\terra-pavilion-v3.blend`. Its package README includes the Blender commands, validation and render logs, comparison sheets, and CC0 asset manifest. The V2 master, build script and render configuration SHA-256 hashes match their starting values.
+
+- The coastal and neutral studio scenes share the four V2 assembly collections and their `POSE` roots. The 16 × 8 m design grid, 300 mm roof, 1 m overhang and 3.2 m clear height were verified. The reopened file passed the packed-texture, roof topology and studio isolation checks. The inherited studio move passed 41 bounding-box and framing samples with a 6.84% minimum margin.
+- Stage A received one corrective pass to improve the coastal horizon, gravel and interior daylight. All six Stage B proofs were rendered after inspecting the corrected set. The nine review stills were rendered at 880 px wide in Blender 5.3.0 on RTX 4060 OptiX. They took 1.23–2.77 s each and peaked at 3,681 MiB of sampled board-wide VRAM. Studio comparisons include desktop and mobile display scales.
+- V3 establishes consistent geometry across the photography and Anatomy views. The coastal foreground, oak and concrete close-ups, glass exposure and interior framing still fall short of the V2 editorial images. Owner visual review is the next step. The work stopped at draft stills.
+- The website remains on `experiment/terra-v3-cinematic` at `1a7359c` with this handoff as the only repository edit. Production `origin/main` is `bead7ef`.
+
 ## TERRA V3 · V3-002 first-scroll performance & mobile polish (ready for owner review)
 
 Branched `experiment/terra-v3-cinematic` from local `main` (`bfe2c91`, preserving the V2-006B release record, `experiment/terra-v2-design` @ `bead7ef`, and production `main` untouched). Improved cold-cache first-scroll playback in Design Anatomy, hardened decoded bitmap caps, added versioned sequence caching for Vercel, and resolved mobile visual polish issues without altering TERRA's identity, Blender assets, or sequence encodings (`0` new dependencies).
