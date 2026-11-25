@@ -1,9 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { DesignAnatomySection } from './anatomy/DesignAnatomySection'
 import {
-  anatomyContent,
   closingContent,
   footerContent,
   heroContent,
@@ -19,11 +18,53 @@ export function App() {
   const rootRef = useRef<HTMLDivElement>(null)
   const closingRef = useRef<HTMLElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [headerOnDark, setHeaderOnDark] = useState(false)
-  const [activeLayerId, setActiveLayerId] = useState<string>(anatomyContent.layers[0].id)
+
+  // Ensure direct fragment URLs (e.g. /#anatomy) align accurately after React mounts DOM & fonts settle
+  useLayoutEffect(() => {
+    const hash = window.location.hash
+    if (!hash || hash.length <= 1) return
+
+    let userInteracted = false
+    const markInteracted = () => {
+      userInteracted = true
+    }
+    window.addEventListener('wheel', markInteracted, { passive: true, once: true })
+    window.addEventListener('touchstart', markInteracted, { passive: true, once: true })
+    window.addEventListener('keydown', markInteracted, { once: true })
+
+    const alignToHash = () => {
+      if (userInteracted) return
+      const target = document.getElementById(hash.slice(1))
+      if (!target) return
+      const headerHeight = document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 64
+      const targetTop = Math.max(
+        0,
+        Math.round(target.getBoundingClientRect().top + window.scrollY - headerHeight),
+      )
+      if (Math.abs(window.scrollY - targetTop) > 2) {
+        window.scrollTo({ top: targetTop, behavior: 'instant' })
+      }
+      ScrollTrigger.refresh()
+    }
+
+    alignToHash()
+    const rafId = window.requestAnimationFrame(alignToHash)
+    let cancelled = false
+    void document.fonts?.ready.then(() => {
+      if (!cancelled) alignToHash()
+    })
+
+    return () => {
+      cancelled = true
+      window.cancelAnimationFrame(rafId)
+      window.removeEventListener('wheel', markInteracted)
+      window.removeEventListener('touchstart', markInteracted)
+      window.removeEventListener('keydown', markInteracted)
+    }
+  }, [])
 
   useEffect(() => {
     const onScroll = () => {
@@ -31,8 +72,9 @@ export function App() {
       setScrolled(y > 24)
       const closingEl = closingRef.current
       if (closingEl) {
+        const headerHeight = document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 64
         const rect = closingEl.getBoundingClientRect()
-        setHeaderOnDark(rect.top <= 68)
+        setHeaderOnDark(rect.top <= headerHeight + 4)
       }
     }
     onScroll()
@@ -97,15 +139,16 @@ export function App() {
         clearProps: 'transform',
       })
 
-      // 2. Architectural media mask reveals (early trigger so no blank frames appear in viewport)
+      // 2. Architectural media mask reveals (skip elements already above/in view; play once without self-killing mid-init)
       const mediaFrames = gsap.utils.toArray<HTMLElement>('[data-media-reveal]')
       mediaFrames.forEach((frame) => {
+        if (frame.getBoundingClientRect().top < window.innerHeight * 0.92) return
         const img = frame.querySelector('img')
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: frame,
             start: 'top 92%',
-            once: true,
+            toggleActions: 'play none none none',
           },
         })
 
@@ -137,6 +180,7 @@ export function App() {
       // 3. Concise editorial text reveals
       const revealGroups = gsap.utils.toArray<HTMLElement>('[data-reveal]')
       revealGroups.forEach((element) => {
+        if (element.getBoundingClientRect().top < window.innerHeight * 0.93) return
         gsap.from(element, {
           opacity: 0,
           y: 16,
@@ -146,7 +190,7 @@ export function App() {
           scrollTrigger: {
             trigger: element,
             start: 'top 93%',
-            once: true,
+            toggleActions: 'play none none none',
           },
         })
       })
@@ -193,36 +237,8 @@ export function App() {
     return () => ctx.revert()
   }, [])
 
-  const activeLayerIndex = Math.max(
-    0,
-    anatomyContent.layers.findIndex((layer) => layer.id === activeLayerId),
-  )
-  const activeLayer = anatomyContent.layers[activeLayerIndex] ?? anatomyContent.layers[0]
-
   function handleNavClick() {
     setMenuOpen(false)
-  }
-
-  function handleAnatomyKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
-    const total = anatomyContent.layers.length
-    let nextIndex: number
-
-    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-      nextIndex = (index + 1) % total
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-      nextIndex = (index - 1 + total) % total
-    } else if (event.key === 'Home') {
-      nextIndex = 0
-    } else if (event.key === 'End') {
-      nextIndex = total - 1
-    } else {
-      return
-    }
-
-    event.preventDefault()
-    const nextLayer = anatomyContent.layers[nextIndex]
-    setActiveLayerId(nextLayer.id)
-    tabRefs.current[nextIndex]?.focus()
   }
 
   return (
@@ -362,6 +378,7 @@ export function App() {
                   alt={philosophyContent.imageAlt}
                   width={1200}
                   height={900}
+                  loading="lazy"
                   decoding="async"
                   className="media-img"
                 />
@@ -428,6 +445,7 @@ export function App() {
                       alt={material.alt}
                       width={900}
                       height={1200}
+                      loading="lazy"
                       decoding="async"
                       className="media-img media-img-interactive"
                     />
@@ -448,87 +466,8 @@ export function App() {
           </div>
         </section>
 
-        {/* 4. DESIGN ANATOMY */}
-        <section
-          id="anatomy"
-          className="section section-stone section-anatomy"
-          aria-labelledby="anatomy-headline"
-        >
-          <div className="container">
-            <div className="anatomy-header" data-reveal>
-              <p className="eyebrow">{anatomyContent.eyebrow}</p>
-              <h2 id="anatomy-headline" className="section-headline">
-                {anatomyContent.headline}
-              </h2>
-              <p className="section-intro anatomy-intro">{anatomyContent.intro}</p>
-            </div>
-
-            <div className="anatomy-stage">
-              <figure className="anatomy-figure">
-                <div className="media-frame media-frame-anatomy" data-media-reveal>
-                  <img
-                    src={anatomyContent.image}
-                    alt={anatomyContent.imageAlt}
-                    width={1600}
-                    height={900}
-                    decoding="async"
-                    className="media-img anatomy-img"
-                  />
-                </div>
-                <figcaption className="anatomy-caption" data-reveal>
-                  <span className="anatomy-caption-dot" aria-hidden="true" />
-                  <span>{anatomyContent.placeholderNote}</span>
-                </figcaption>
-              </figure>
-
-              <div className="anatomy-inspector" data-reveal>
-                <div
-                  className="anatomy-layer-list"
-                  role="tablist"
-                  aria-label="Architectural anatomy layers"
-                >
-                  {anatomyContent.layers.map((layer, index) => {
-                    const isSelected = layer.id === activeLayer.id
-                    return (
-                      <button
-                        key={layer.id}
-                        ref={(el) => {
-                          tabRefs.current[index] = el
-                        }}
-                        type="button"
-                        role="tab"
-                        id={`anatomy-tab-${layer.id}`}
-                        aria-selected={isSelected}
-                        aria-controls={`anatomy-panel-${layer.id}`}
-                        tabIndex={isSelected ? 0 : -1}
-                        className={`anatomy-layer-btn${isSelected ? ' is-active' : ''}`}
-                        onClick={() => setActiveLayerId(layer.id)}
-                        onKeyDown={(event) => handleAnatomyKeyDown(event, index)}
-                      >
-                        <span className="anatomy-layer-index">{layer.index}</span>
-                        <span className="anatomy-layer-title">{layer.title}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-
-                <div
-                  key={activeLayer.id}
-                  id={`anatomy-panel-${activeLayer.id}`}
-                  role="tabpanel"
-                  aria-labelledby={`anatomy-tab-${activeLayer.id}`}
-                  className="anatomy-detail-panel"
-                >
-                  <p className="anatomy-detail-stratum">
-                    Stratum {activeLayer.index} / 0{anatomyContent.layers.length}
-                  </p>
-                  <p className="anatomy-detail-spec">{activeLayer.specification}</p>
-                  <p className="anatomy-detail-summary">{activeLayer.summary}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* 4. DESIGN ANATOMY (Scroll-Controlled Production Assembly) */}
+        <DesignAnatomySection />
 
         {/* 5. SPATIAL EXPERIENCE */}
         <section
@@ -555,6 +494,7 @@ export function App() {
                 alt={spatialContent.imageAlt}
                 width={1600}
                 height={900}
+                loading="lazy"
                 decoding="async"
                 className="media-img media-img-parallax"
                 data-parallax-img
@@ -597,6 +537,7 @@ export function App() {
                   alt={closingContent.imageAlt}
                   width={1600}
                   height={900}
+                  loading="lazy"
                   decoding="async"
                   className="media-img"
                 />

@@ -21,6 +21,7 @@ export interface AnatomyLayer {
   readonly id: string
   readonly index: string
   readonly title: string
+  readonly shortTitle: string
   readonly summary: string
   readonly specification: string
 }
@@ -103,39 +104,44 @@ export const anatomyContent = {
   headline: 'Every layer. A purpose.',
   intro:
     'Composed like a precision instrument, TERRA separates shelter, climate moderation, structural core, and ground plane into four legible architectural strata.',
-  image: '/images/anatomy.jpg',
   imageAlt:
-    'Exploded axonometric architectural model of the TERRA pavilion separated vertically into four aligned layers: cantilevered roof plane, timber and glass envelope, structural concrete core, and limestone plinth with reflecting pool.',
-  placeholderNote:
-    'Static architectural anatomy study — temporary visual placeholder for the future scroll-driven exploded assembly.',
+    'Scroll-controlled architectural assembly of the TERRA pavilion separating from an assembled volume into four aligned strata: cantilevered concrete roof, oak louver and glass envelope, interior core, and limestone plinth with recessed reflecting basin.',
   layers: [
     {
       id: 'roof',
       index: '01',
       title: 'Cantilevered Roof Plane',
-      summary: 'A 300 mm monolithic concrete slab extending 1.0 m beyond the glazing to shade the facade.',
+      shortTitle: 'Roof',
+      summary:
+        'A 300 mm monolithic concrete slab extending 1.0 m beyond the glazing to shade the facade.',
       specification: 'Board-formed concrete · Integrated skylight aperture',
     },
     {
       id: 'envelope',
       index: '02',
       title: 'Filtered Envelope',
-      summary: 'Vertical timber louvers and full-height sliding low-iron glass moderate light, breeze, and privacy.',
+      shortTitle: 'Envelope',
+      summary:
+        'Vertical timber louvers and full-height sliding low-iron glass moderate light, breeze, and privacy.',
       specification: 'Rift-cut oak screen · Slim charcoal steel frames',
     },
     {
       id: 'core',
       index: '03',
       title: 'Structural Core & Interior',
-      summary: 'Load-bearing plaster-finished concrete partitions organize living, dining, and quiet retreat zones.',
+      shortTitle: 'Core & interior',
+      summary:
+        'Load-bearing plaster-finished concrete partitions organize living, dining, and quiet retreat zones.',
       specification: 'Open-plan 128 m² interior · Wide-plank matte oak floor',
     },
     {
       id: 'plinth',
       index: '04',
       title: 'Grounded Plinth & Basin',
-      summary: 'An elevated limestone terrace steps cleanly to a recessed dark-stone reflecting pool.',
-      specification: '24 × 18 m site plinth · 10 × 3.5 m still water basin',
+      shortTitle: 'Plinth',
+      summary:
+        'An elevated limestone terrace steps cleanly to a recessed dark-stone reflecting pool.',
+      specification: '22.5 × 16.34 m studio plinth · 10.7 × 3.3 m recessed basin',
     },
   ] satisfies readonly AnatomyLayer[],
 } as const
@@ -175,6 +181,6 @@ export const footerContent = {
   wordmark: 'TERRA',
   tagline: 'Architecture, distilled.',
   prototypeNotice:
-    'Visual prototype (V2). All architectural imagery on this page is AI-generated conceptual visualization created for design review and does not represent a built project.',
-  colophon: 'TERRA Architectural Product Experience · Experimental Design Prototype',
+    'TERRA V2 homepage preview. Design Anatomy renders from the approved studio pavilion sequence; editorial photography across other sections remains conceptual visualization.',
+  colophon: 'TERRA Architectural Product Experience · V2 Integration Preview',
 } as const
