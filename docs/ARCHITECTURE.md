@@ -2,13 +2,13 @@
 
 TERRA's architectural generations in Git:
 
-- **TERRA V3 Release Candidate (`experiment/terra-v3-cinematic`, branched from `main` @ `bfe2c91`)** — Feature-frozen cinematic refinement adding desktop-only Lenis smooth wheel scrolling, responsive AVIF/WebP super-resolved editorial photography, refined editorial composition/motion, a unified sticky Design Anatomy plate (`950 px` desktop / `600 px` mobile runway), decoupled cold-scroll prefetching, and versioned immutable sequence caching (`vercel.json`).
-- **Deployed Production V2 (`main` @ `bfe2c91` / `origin/main` @ `bead7ef`, preserved on `experiment/terra-v2-design`)** — Minimalist editorial architectural product experience with a pre-rendered Blender Cycles image-sequence assembly in Design Anatomy (2D Canvas, zero runtime WebGL).
+- **TERRA V3.0.0 (`main` @ `6c486cd`, tagged `v3.0.0`, live at [https://terra-project-six.vercel.app](https://terra-project-six.vercel.app); preserved on `experiment/terra-v3-cinematic`)** — Production cinematic refinement adding desktop-only Lenis smooth wheel scrolling, responsive AVIF/WebP super-resolved editorial photography, refined editorial composition/motion, a unified sticky Design Anatomy plate (`950 px` desktop / `600 px` mobile runway), decoupled cold-scroll prefetching, and versioned immutable sequence caching (`vercel.json`).
+- **Preserved V2 Rollback Reference (`bead7ef`, preserved on `experiment/terra-v2-design`)** — Minimalist editorial architectural product experience with a pre-rendered Blender Cycles image-sequence assembly in Design Anatomy (2D Canvas, zero runtime WebGL).
 - **Preserved V1 Rollback Reference (`7bd2201`)** — Editorial architectural monograph with a persistent real-time Three.js / React Three Fiber WebGL 2 diorama (`src/SceneViewport.tsx`, `src/cinematicCamera.ts`, `src/VillaBlockout.tsx`, `src/VillaMaterials.ts`, `src/TropicalLandscape.tsx`).
 
 ---
 
-## Active Editorial, Smooth Scroll & Sequence Architecture (V3 Release Candidate)
+## Active Editorial, Smooth Scroll & Sequence Architecture (V3.0.0)
 
 ### Application Shell, Smooth Scroll & Editorial Sections
 - `src/main.tsx` mounts `src/App.tsx` inside React `StrictMode`.

@@ -1,8 +1,8 @@
 # Working on TERRA
 
-TERRA is independent. Work inside this repository and keep unrelated project source, including Asta RAB, out of discovery and implementation.
+TERRA is independent. Work inside this repository and keep unrelated project source out of discovery and implementation.
 
-The approved stack is Vite, React, TypeScript, npm, Three.js, React Three Fiber, Drei, GSAP, plain CSS with custom properties, ESLint, and Git. Keep dependencies limited to the task. Use official documentation and registry metadata for technical decisions. Use skills only when relevant to the current work.
+The approved stack is Vite, React, TypeScript, npm, Three.js, React Three Fiber, Drei, GSAP, Lenis, plain CSS with custom properties, ESLint, and Git. Keep dependencies limited to the task. Use official documentation and registry metadata for technical decisions. Use skills only when relevant to the current work.
 
 Codex leads engineering. Google Antigravity handles creative development, independent review, and visual QA. DeepSeek Harness is optional for isolated work or quota management. ChatGPT handles planning and orchestration. Coordinate ownership before editing overlapping files and record context in [the handoff](docs/HANDOFF.md).
 

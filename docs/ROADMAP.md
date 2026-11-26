@@ -1,6 +1,6 @@
 # Roadmap
 
-## TERRA V3 — Cinematic Refinement (`experiment/terra-v3-cinematic`)
+## TERRA V3.0.0 — Cinematic Refinement (`main` @ `6c486cd`, tagged `v3.0.0`, deployed)
 
 | Task | Phase | Status |
 | --- | --- | --- |
@@ -12,16 +12,17 @@
 | V3-004B | High-fidelity responsive editorial image delivery (AVIF/WebP + mobile art direction) | Complete (approved) |
 | V3-004C | Hero super-resolution PoC & integration (`realesrgan-x4plus` 2752×1536, minor artificial sharpness noted) | Complete (approved) |
 | V3-004D | Selective editorial image super-resolution (`spatial`, `closing`, `philosophy` 60/40 blend; Materiality retained) | Complete (approved) |
-| V3-004E | Full-page editorial & motion refinement (Philosophy, Materiality, Spatial, Closing, Footer) | Complete (owner approved, local checkpoint) |
+| V3-004E | Full-page editorial & motion refinement (Philosophy, Materiality, Spatial, Closing, Footer) | Complete (approved) |
 | V3-005A | Design Anatomy studio look development and rendering proof of concept | Complete (closed — V2-004B sequence & transparent WebP retained) |
 | V3-005B | Design Anatomy production sequence refresh | Closed (V3 Blender master preserved externally; no production render) |
 | V3-006A | Lenis smooth scroll PoC (`lerp: 0.14`) & unified Anatomy sticky composition (`950/600 px`) (`97c3ba8`) | Complete (approved) |
-| V3-006B | Feature freeze, asset cleanup, documentation & local release candidate | Complete (release candidate ready) |
-| V3-007 | Production deployment, Vercel verification & release tagging (awaiting owner authorization) | Planned (next) |
+| V3-006B | Feature freeze, asset cleanup, documentation & release candidate (`6c486cd`) | Complete (approved) |
+| V3-007A | Final Vercel Preview validation (`experiment/terra-v3-cinematic` @ `6c486cd`) | Complete (approved) |
+| V3-007B | Production release to `main` (`6c486cd`), live HTTPS verification & `v3.0.0` tag | Complete (released) |
 
 ---
 
-## TERRA V2 — Architectural Product Experience (`main` @ `bfe2c91`, deployed; preserved on `experiment/terra-v2-design`)
+## TERRA V2 — Architectural Product Experience (rollback reference @ `bead7ef`, preserved on `experiment/terra-v2-design`)
 
 | Task | Phase | Status |
 | --- | --- | --- |
