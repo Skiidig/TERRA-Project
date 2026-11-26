@@ -63,11 +63,13 @@ export const philosophyContent = {
     'TERRA begins by removing everything that interrupts daylight, horizon, and stillness. A single horizontal roof plane anchors the volume while deep perimeter overhangs soften the sun before it reaches the glass.',
     'Every line serves proportion and calm. Nothing is added for ornament; every junction is resolved so the eye moves effortlessly from interior timber to coastal meadow.',
   ],
-  image: '/images/philosophy-v3-1200w.webp',
-  imageAvifSrcSet: '/images/philosophy-v3-760w.avif 760w, /images/philosophy-v3-1200w.avif 1200w',
-  imageSrcSet: '/images/philosophy-v3-760w.webp 760w, /images/philosophy-v3-1200w.webp 1200w',
-  width: 1200,
-  height: 896,
+  image: '/images/philosophy-v3d-1200w.webp',
+  imageAvifSrcSet:
+    '/images/philosophy-v3d-760w.avif 760w, /images/philosophy-v3d-1200w.avif 1200w, /images/philosophy-v3d-1800w.avif 1800w',
+  imageSrcSet:
+    '/images/philosophy-v3d-760w.webp 760w, /images/philosophy-v3d-1200w.webp 1200w, /images/philosophy-v3d-1800w.webp 1800w',
+  width: 1800,
+  height: 1344,
   imageAlt:
     'Architectural detail of the TERRA pavilion showing a cantilevered board-formed concrete roof overhang casting a clean diagonal shadow across pale limestone pavers and vertical oak timber louvers.',
   metrics: [
@@ -180,11 +182,13 @@ export const spatialContent = {
   headline: 'Space to breathe.',
   intro:
     'Inside, architecture recedes into light, horizon, and proportion—leaving room only for presence.',
-  image: '/images/spatial-v3-1376w.webp',
-  imageAvifSrcSet: '/images/spatial-v3-800w.avif 800w, /images/spatial-v3-1376w.avif 1376w',
-  imageSrcSet: '/images/spatial-v3-800w.webp 800w, /images/spatial-v3-1376w.webp 1376w',
-  width: 1376,
-  height: 768,
+  image: '/images/spatial-v3d-1920w.webp',
+  imageAvifSrcSet:
+    '/images/spatial-v3d-800w.avif 800w, /images/spatial-v3d-1920w.avif 1920w, /images/spatial-v3d-2752w.avif 2752w',
+  imageSrcSet:
+    '/images/spatial-v3d-800w.webp 800w, /images/spatial-v3d-1920w.webp 1920w, /images/spatial-v3d-2752w.webp 2752w',
+  width: 2752,
+  height: 1536,
   imageAlt:
     'Serene minimalist interior of the TERRA pavilion with wide-plank pale oak floors, concrete ceiling, travertine table, linen daybed, and frameless glass opening onto a still reflecting pool and coastal meadow.',
   notes: [
@@ -205,11 +209,13 @@ export const closingContent = {
   supportingLine:
     'A quiet architectural study in proportion, honest materiality, and calm presence.',
   ctaLabel: 'Return to top',
-  image: '/images/closing-v3-1376w.webp',
-  imageAvifSrcSet: '/images/closing-v3-800w.avif 800w, /images/closing-v3-1376w.avif 1376w',
-  imageSrcSet: '/images/closing-v3-800w.webp 800w, /images/closing-v3-1376w.webp 1376w',
-  width: 1376,
-  height: 768,
+  image: '/images/closing-v3d-1920w.webp',
+  imageAvifSrcSet:
+    '/images/closing-v3d-800w.avif 800w, /images/closing-v3d-1920w.avif 1920w, /images/closing-v3d-2752w.avif 2752w',
+  imageSrcSet:
+    '/images/closing-v3d-800w.webp 800w, /images/closing-v3d-1920w.webp 1920w, /images/closing-v3d-2752w.webp 2752w',
+  width: 2752,
+  height: 1536,
   imageAlt:
     'Dusk architectural visualization of the TERRA pavilion glowing softly with warm interior light reflected across a dark still water basin under a muted twilight sky.',
 } as const

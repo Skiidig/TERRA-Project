@@ -1,5 +1,21 @@
 # Handoff
 
+## TERRA V3 · V3-004D selective editorial image super-resolution (approved local checkpoint)
+
+Completed and received owner visual approval for selective editorial photography super-resolution on `experiment/terra-v3-cinematic` (building on `8aed2f8`). Prioritized natural photographic fidelity over maximum sharpness (zero unsharp masking, `60% SR / 40% Original` blending) using the existing external portable `realesrgan-ncnn-vulkan` `v0.2.5.0` (`realesrgan-x4plus`, RTX 4060 Vulkan, `50.30 s` total across 6 masters). Accepted Hero (`hero-v3c-*`), Design Anatomy, layout, typography, CSS, GSAP choreography, Blender assets, and all rollback assets remain untouched.
+
+- **Upgraded Editorial Photography (3 wide bands that upscaled on HiDPI desktop)**:
+  - **Spatial (`spatial-v3d-*`, P0)**: `60/40` SR/Original blend at `2×` (`2752×1536` `180.9 KiB` AVIF / `164.2 KiB` WebP; `1920×1072` `120.8 KiB` AVIF; `800×447` `30.1 KiB` AVIF). Eliminates `2.09×` HiDPI upscaling while preserving matte plaster grain, pale oak flooring, and soft daylight.
+  - **Closing (`closing-v3d-*`, P0)**: `60/40` SR/Original blend at `2×` (`2752×1536` `264.8 KiB` AVIF / `254.9 KiB` WebP; `1920×1072` `175.6 KiB` AVIF; `800×447` `43.7 KiB` AVIF). Eliminates `1.91×` HiDPI upscaling while preserving silky twilight sky gradients, smooth water reflections, and zero glazing halos.
+  - **Philosophy (`philosophy-v3d-*`, P1)**: `60/40` SR/Original blend at `1.5×` (`1800×1344` `177.4 KiB` AVIF / `184.8 KiB` WebP; `1200×896` `98.3 KiB` AVIF; `760×567` `43.8 KiB` AVIF). Eliminates `1.29×` HiDPI upscaling while preserving board-formed concrete mineral texture.
+- **Retained Existing Materiality Studies (3 triptych cards already native on HiDPI)**:
+  - **Material Concrete**, **Material Timber**, and **Material Glass** already exceed rendered physical dimensions on both Desktop DPR 2 (`820×1094` < `896×1200`) and Mobile DPR 2 (`708×944` < `896×1200`); SR either invented subtle linear formwork striations (concrete), slightly smoothed organic oak fiber (timber), or added negligible benefit (glass), so existing assets were retained unchanged.
+- **Performance & Verification (Edge CDP, `http://localhost:4175/`)**:
+  - Desktop `1440×900` DPR 1: Full-visit images `732.1 → 717.7 KiB` (`-14.4 KiB`), `LCP 188 ms`, `CLS 0.0007`, `0` duplicate Hero requests, `0` initial Anatomy requests.
+  - HiDPI Desktop `1440×900` DPR 2: `LCP 128 ms`, `CLS 0.0018`, full-visit images `1153.5 → 1329.3 KiB` (`+175.8 KiB` for `2752w`/`1800w` Retina fidelity).
+  - Mobile `390×844` DPR 2 (`4 Mbps / 120 ms` throttled): Full-visit images `576.9 → 533.7 KiB` (`-43.2 KiB` / `-7.5%`), `LCP 820 ms`, `CLS 0.0019` (`0` unthrottled).
+  - Reproducible scripts and SHA-256 manifest remain outside Git (`scratch/v3_004d_eval.py`, `scratch/v3_004d_encode.py`, `scratch/v3-004d-sr/v3_004d_manifest.json`). Rollback assets preserved in `public/images/`.
+
 ## TERRA V3 · V3-004A/B/C Hero refinement, responsive delivery & super-resolution (approved end-of-day checkpoint)
 
 Completed and received owner approval for the **Hybrid Cinematic Experience** Hero refinement (`V3-004A` committed at `a50517e`), editorial responsive image delivery (`V3-004B`), and Hero super-resolution (`V3-004C`) on `experiment/terra-v3-cinematic`. Development is paused at this checkpoint; **V3-004D** is the next pending task (not started). Production `origin/main` (`bead7ef`), local `main` (`bfe2c91`), and the remote V3 preview branch (`origin/experiment/terra-v3-cinematic` @ `1a7359c`) remain untouched.

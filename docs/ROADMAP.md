@@ -11,10 +11,10 @@
 | V3-004A | Monumental Editorial Hero layout & motion refinement (`a50517e`) | Complete (approved) |
 | V3-004B | High-fidelity responsive editorial image delivery (AVIF/WebP + mobile art direction) | Complete (approved) |
 | V3-004C | Hero super-resolution PoC & integration (`realesrgan-x4plus` 2752×1536, minor artificial sharpness noted) | Complete (approved) |
-| V3-004D | Next pending V3 refinement task (paused at end-of-day checkpoint) | Pending (next) |
-| V3-005 | Unified architectural photography / remaining section visual polish | Planned |
-| V3-006 | Design Anatomy V3 studio sequence refresh | Planned |
-| V3-007 | Final multi-viewport QA, performance audit & release prep | Planned |
+| V3-004D | Selective editorial image super-resolution (`spatial`, `closing`, `philosophy` 60/40 blend; Materiality retained) | Complete (approved) |
+| V3-004E | Full-page editorial & motion refinement (Philosophy, Materiality, Spatial, Closing, Footer) | In progress |
+| V3-005 | Focused Design Anatomy evaluation & studio sequence refresh | Planned |
+| V3-006 | Final multi-viewport QA, asset cleanup, performance audit & release prep | Planned |
 
 ---
 
