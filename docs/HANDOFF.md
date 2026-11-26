@@ -1,5 +1,16 @@
 # Handoff
 
+## TERRA V3 · V3-005A Design Anatomy studio proof (closed — V2-004B sequence retained)
+
+The 005A proof lives at `D:\GitHub\terra-v3-assets\anatomy-v3-005a`. It contains isolated V3 studio masters, 21 draft stills, website-scale comparisons, the WebP benchmark, and Edge scroll evidence. The 161-sample audit verified all four POSE roots and the inherited assembly progression. The enlarged rig entered the site feather, while the centered option held a 7.55% minimum margin and grew mainly at intermediate poses.
+
+**Strategic Decision (Closed)**:
+- Retain the existing V2-004B production Anatomy sequence, runway, inspector, and transparent WebP delivery architecture.
+- Preserve the V3 Blender master (`D:\GitHub\terra-v3-assets\pavilion-v3` and `anatomy-v3-005a`) as external experimental assets only.
+- Do not initiate V3 Blender production rendering; the Blender look-development experiment is closed. (The corrected V3 studio improved material separation modestly with limited gains at mobile scale; opaque WebP precomposition reduced sampled bytes by 55.2% desktop / 62.1% mobile at the cost of softer edges and shadows.)
+
+The approved V3-004E checkpoint is `c686e7e`. The local build verified the sticky runway, anchor alignment, forward and reverse playback, mouse wheel, emulated touch, and reduced-motion poster. The Anatomy implementation and sequence assets remain those in `c686e7e`. Next evaluation: **V3-006A** (Lenis smooth scroll PoC & tall-viewport Anatomy stage composition).
+
 ## TERRA V3 · V3-004E editorial composition and motion (approved local checkpoint)
 
 The owner approved the desktop and mobile editorial direction after reviewing the V3-004E screenshots. The approved update refines Philosophy's metrics, adds restrained desktop drift to Materiality, adjusts the Spatial image and notes, and gives Closing a full-width twilight image and a quieter transition into the footer. The Hero, photography, typography, and editorial direction are approved. Design Anatomy moves to a separate V3-005A studio proof.
