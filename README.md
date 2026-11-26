@@ -4,29 +4,29 @@
 
 TERRA is an independent minimalist architectural product experience built with Vite, React, TypeScript, GSAP, and plain CSS.
 
-- **Active V3 Refinement (`experiment/terra-v3-cinematic`)**: Cinematic refinement work building on V2 — starting with cold-scroll performance optimization, versioned immutable sequence caching (`vercel.json`), and mobile polish.
-- **Deployed Production V2 (`main` @ `bfe2c91` / `origin/main` @ `bead7ef`, preserved on `experiment/terra-v2-design`)**: Editorial architectural website leading with typography, proportion, and photography, enhanced selectively by a scroll-controlled pre-rendered Blender Cycles pavilion assembly in **Design Anatomy** (2D canvas + responsive WebP sequences, zero runtime WebGL), currently live at [https://terra-project-six.vercel.app](https://terra-project-six.vercel.app).
+- **TERRA V3 Release Candidate (`experiment/terra-v3-cinematic`, feature-frozen)**: Hybrid cinematic evolution of V2 — featuring a monumental full-bleed Hero, responsive AVIF/WebP super-resolved architectural photography, refined editorial typography and spacing, desktop-only Lenis smooth wheel scrolling (`lerp: 0.14`), a unified sticky Design Anatomy composition (`950 px` desktop / `600 px` mobile runway), decoupled cold-scroll prefetching, and versioned immutable caching (`vercel.json`).
+- **Deployed Production V2 (`main` @ `bfe2c91` / `origin/main` @ `bead7ef`, preserved on `experiment/terra-v2-design`)**: Editorial architectural website with scroll-controlled pre-rendered Blender Cycles pavilion assembly in **Design Anatomy** (2D canvas + responsive WebP sequences, zero runtime WebGL), currently live at [https://terra-project-six.vercel.app](https://terra-project-six.vercel.app).
 - **Preserved V1 Rollback Reference (`7bd2201`)**: Real-time procedural WebGL 2 diorama (Three.js / React Three Fiber / Drei).
 
 ---
 
-## Homepage Architecture (V2)
+## Homepage Architecture (V3 Release Candidate)
 
-1. **Hero (`Architecture, distilled.`)** — Asymmetric editorial lockup with self-hosted `Manrope` display typography, selective `Cormorant Garamond` italic accents, and high-priority responsive WebP hero imagery (`preload` + `fetchPriority="high"`).
-2. **Philosophy (`Less form. More feeling.`)** — Asymmetric architectural detail study paired with concise prose and proportion metrics (`16 × 8 m`, `1.0 m` cantilever, `3.2 m` clear height).
-3. **Materiality (`Nothing unnecessary.`)** — Staggered 3-column close-up studies of board-formed concrete, rift-cut natural oak, and low-iron architectural glass.
-4. **Design Anatomy (`Every layer. A purpose.`)** — Restrained sticky-stage architectural separation driven by native scroll and adaptive damped playback (`65–115 ms` time constants), paired with a WAI-ARIA keyboard-accessible 4-layer inspector (`Cantilevered Roof Plane`, `Filtered Envelope`, `Structural Core & Interior`, `Grounded Plinth & Basin`).
-5. **Spatial Experience (`Space to breathe.`)** — Full-bleed interior photography with subtle desktop-only scroll parallax.
-6. **Closing & Footer (`Designed to feel different.`)** — Atmospheric dusk band with adaptive dark sticky header transition, semantic navigation, and conceptual imagery disclosure.
+1. **Hero (`Architecture, distilled.`)** — Monumental full-bleed editorial opening with tight-tracked self-hosted `Manrope` display typography, `Cormorant Garamond` italic accent, hairline rule, architectural datum bar, media-matched AVIF `<link rel="preload">` (`1920w` / `2752w` desktop + `800×960` art-directed mobile portrait crop), and desktop scroll handoff.
+2. **Philosophy (`Less form. More feeling.`)** — Asymmetric architectural detail study paired with concise prose and a hairline-divided tabular dimension ledger (`16 × 8 m`, `1.0 m` cantilever, `3.2 m` clear height).
+3. **Materiality (`Nothing unnecessary.`)** — Staggered 3-column close-up studies of board-formed concrete, rift-cut natural oak, and low-iron architectural glass with subtle desktop-only scroll counter-drift on the offset center column.
+4. **Design Anatomy (`Every layer. A purpose.`)** — Unified sticky architectural composition keeping the split editorial header, `16:10` Blender Cycles model, progress track, and WAI-ARIA keyboard-accessible 4-layer inspector connected throughout the scroll runway (`950 px` desktop, `780 px` tablet, `600 px` mobile, `560 px` compact mobile; `0 px` under reduced motion).
+5. **Spatial Experience (`Space to breathe.`)** — Monumental full-bleed interior photograph with subtle desktop-only scroll parallax/settle and hairline-divided architectural notes.
+6. **Closing & Footer (`Designed to feel different.`)** — Edge-to-edge twilight pavilion elevation over charcoal (`#171A18`) with adaptive dark sticky header transition, semantic navigation, `Return to top` bookend affordance, and conceptual imagery disclosure.
 
 ---
 
 ## Technology Stack
 
 - **Core**: Vite 7, React 19, TypeScript 5.9, plain CSS with custom properties
-- **Motion**: GSAP 3 (`ScrollTrigger`) + frame-rate-independent local `requestAnimationFrame` damping
+- **Motion & Scroll**: GSAP 3 (`ScrollTrigger`), desktop-only `lenis@1.3.28` (`lerp: 0.14`, `smoothWheel: true`, `syncTouch: false`, `autoRaf: false` driven by `gsap.ticker`), and frame-rate-independent local `requestAnimationFrame` damping for Design Anatomy
 - **Quality**: ESLint 10, `typescript-eslint`, React `StrictMode`
-- **Legacy V1 3D Dependencies**: `three`, `@react-three/fiber`, and `@react-three/drei` remain in `package.json` for V1 compatibility on `main`, but are tree-shaken out of the V2 production bundle (`0` runtime WebGL code shipped in V2).
+- **Legacy V1 3D Dependencies**: `three`, `@react-three/fiber`, and `@react-three/drei` remain in `package.json` for V1 rollback compatibility on `main`, and are tree-shaken out of the V2/V3 production bundle (`0` runtime WebGL code shipped).
 
 ---
 
@@ -73,8 +73,9 @@ Production Design Anatomy frames live under a versioned directory (`public/anato
 
 ## Editable Sources, Imagery Disclosure & Licenses
 
-- **Design Anatomy Studio Sequence**: Rendered in Blender 5.3.0 (Cycles OptiX, transparent shadow catcher blended into `#EBE7DC`) from bespoke, original editable sources stored outside Git at `D:\GitHub\terra-v2-assets\pavilion-v2` (and production render/encode scripts at `D:\GitHub\terra-v2-assets\scroll-production-v2-004b`).
-- **Conceptual Homepage Photography Disclosure**: Editorial imagery in Hero, Philosophy, Materiality, Spatial Experience, and Closing (`public/images/*.webp`) is **AI-generated conceptual architectural visualization** created for TERRA V2 and does not represent a built project.
+- **Design Anatomy Studio Sequence (Production)**: Rendered in Blender 5.3.0 (Cycles OptiX, transparent shadow catcher blended into `#EBE7DC`) from bespoke, original editable sources stored outside Git at `D:\GitHub\terra-v2-assets\pavilion-v2` (and production render/encode scripts at `D:\GitHub\terra-v2-assets\scroll-production-v2-004b`).
+- **Closed / Abandoned V3 Blender Experiments (Not Shipped)**: External V3 look-development masters (`D:\GitHub\terra-v3-assets\pavilion-v3`, `anatomy-v3-005a`) and opaque WebP precomposition tests were evaluated during V3-003A/B and V3-005A and intentionally closed; V2-004B transparent WebP sequences remain the approved production asset.
+- **Conceptual Homepage Photography & Super-Resolution Disclosure**: Editorial imagery in Hero, Philosophy, Materiality, Spatial Experience, and Closing (`public/images/*.avif` / `*.webp`) is **AI-generated conceptual architectural visualization** and does not represent a built project. Hero (`hero-v3c-*`), Spatial (`spatial-v3d-*`), Closing (`closing-v3d-*`), and Philosophy (`philosophy-v3d-*`) were selectively super-resolved from the recovered pre-WebP original masters using portable `realesrgan-ncnn-vulkan` `v0.2.5.0` (`realesrgan-x4plus`, RTX 4060 Vulkan; conservative `60/40` blend for editorial sections) and encoded as responsive AVIF primary / WebP fallback assets. `hero.webp` is retained for Open Graph / Twitter social card metadata.
 - **Self-Hosted Fonts (`public/fonts/`, `0` external requests)**:
   - **Manrope** — SIL Open Font License, Version 1.1 ([OFL-Manrope.txt](public/fonts/OFL-Manrope.txt)).
   - **Cormorant Garamond** — SIL Open Font License, Version 1.1 ([OFL-Cormorant-Garamond.txt](public/fonts/OFL-Cormorant-Garamond.txt)).

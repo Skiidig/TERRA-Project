@@ -15,8 +15,9 @@
 | V3-004E | Full-page editorial & motion refinement (Philosophy, Materiality, Spatial, Closing, Footer) | Complete (owner approved, local checkpoint) |
 | V3-005A | Design Anatomy studio look development and rendering proof of concept | Complete (closed — V2-004B sequence & transparent WebP retained) |
 | V3-005B | Design Anatomy production sequence refresh | Closed (V3 Blender master preserved externally; no production render) |
-| V3-006A | Lenis smooth scroll PoC & Anatomy tall-viewport refinement | In progress |
-| V3-006B | Final multi-viewport QA, asset cleanup, performance audit & release prep | Planned |
+| V3-006A | Lenis smooth scroll PoC (`lerp: 0.14`) & unified Anatomy sticky composition (`950/600 px`) (`97c3ba8`) | Complete (approved) |
+| V3-006B | Feature freeze, asset cleanup, documentation & local release candidate | Complete (release candidate ready) |
+| V3-007 | Production deployment, Vercel verification & release tagging (awaiting owner authorization) | Planned (next) |
 
 ---
 

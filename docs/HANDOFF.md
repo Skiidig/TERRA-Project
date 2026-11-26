@@ -1,5 +1,18 @@
 # Handoff
 
+## TERRA V3 · V3-006B feature freeze, final cleanup & release candidate (ready for V3-007 release decision)
+
+TERRA V3 entered **feature freeze** on `experiment/terra-v3-cinematic`. Approved V3-006A (desktop-only `lenis@1.3.28` `lerp: 0.14`, unified sticky Design Anatomy composition with `+7.5%` wider `16:10` framing, and optimized `950 px` desktop / `600 px` mobile runway) was checkpointed locally at **`97c3ba8`** (`feat: integrate Lenis and refine Anatomy scroll composition`).
+
+- **Asset Cleanup (`public/images/`, `-2,658.8 KiB` / `-2.60 MiB`)**:
+  - Audited all `/images/` references across `index.html`, `src/`, `vercel.json`, and `public/anatomy-sequence/v2-004b/manifest.json`.
+  - Removed `27` conclusively unused superseded image files (`11` legacy V2 WebPs, `754.0 KiB`; `16` superseded V3-004B AVIF/WebPs, `1,904.8 KiB`) while retaining all `35` active files (`4,876.1 KiB`), including `hero.webp` (`155.7 KiB`) for `og:image` / `twitter:image` social cards. All removed files remain recoverable via Git history (`97c3ba8`, `bead7ef`) and external masters (`D:\GitHub\terra-v2-assets`, external scratch originals/scripts).
+- **Code Hygiene & Documentation**:
+  - Verified zero debug logs, zero `TODO`/`FIXME` markers, clean `lenis` + `ScrollTrigger` + `ResizeObserver` teardown, and consistent `package.json` / `package-lock.json` (`lenis@1.3.28` only new dependency).
+  - Updated `README.md`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, and `docs/HANDOFF.md` to reflect the final V3 Release Candidate architecture, clearly distinguishing shipped production features from closed V3 Blender/opaque-WebP experiments (`V3-003A/B`, `V3-005A/B`), and documenting AI-assisted conceptual imagery + Real-ESRGAN super-resolution.
+- **Branch & Deployment Isolation**:
+  - Local `main` (`bfe2c91`), production `origin/main` (`bead7ef`), and remote V3 Preview (`origin/experiment/terra-v3-cinematic` @ `1a7359c`) remain completely untouched. No push, merge, deployment, or release tag performed; **V3-007** awaits explicit owner authorization.
+
 ## TERRA V3 · V3-005A Design Anatomy studio proof (closed — V2-004B sequence retained)
 
 The 005A proof lives at `D:\GitHub\terra-v3-assets\anatomy-v3-005a`. It contains isolated V3 studio masters, 21 draft stills, website-scale comparisons, the WebP benchmark, and Edge scroll evidence. The 161-sample audit verified all four POSE roots and the inherited assembly progression. The enlarged rig entered the site feather, while the centered option held a 7.55% minimum margin and grew mainly at intermediate poses.

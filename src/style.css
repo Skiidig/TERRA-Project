@@ -482,7 +482,7 @@ section[id] {
   color: var(--color-ink-muted);
 }
 
-/* 1. HERO — V3-004A Monumental Editorial Composition */
+/* 1. HERO — Monumental Editorial Composition */
 .hero-section {
   background-color: var(--color-ivory);
   min-height: calc(100svh - var(--header-height));
@@ -1114,7 +1114,7 @@ section[id] {
   margin-bottom: 0.625rem;
 }
 
-/* 6. CLOSING — Selected Approach A (Monumental Full-Bleed Twilight) */
+/* 6. CLOSING — Monumental Full-Bleed Twilight */
 .section-closing {
   padding-block: clamp(2.75rem, 5vw, 4.25rem) 0;
 }

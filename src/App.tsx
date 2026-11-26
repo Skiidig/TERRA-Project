@@ -376,7 +376,7 @@ export function App() {
       </header>
 
       <main id="main-content" tabIndex={-1}>
-        {/* 1. HERO — V3-004A Monumental Editorial Prototype */}
+        {/* 1. HERO — Monumental Editorial Opening */}
         <section className="hero-section" aria-labelledby="hero-headline">
           <div className="container hero-top">
             <div className="hero-header">
