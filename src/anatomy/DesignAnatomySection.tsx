@@ -3,6 +3,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { anatomyContent } from '../content/v2Content'
+import { scrollToY } from '../lib/smoothScroll'
 import { createFramePlayer } from './framePlayer'
 import type { FramePlayer, FramePlayerState } from './framePlayer'
 import {
@@ -55,6 +56,7 @@ export function DesignAnatomySection() {
   const sectionRef = useRef<HTMLElement>(null)
   const runwayRef = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const posterRef = useRef<HTMLImageElement>(null)
   const progressBarRef = useRef<HTMLSpanElement>(null)
@@ -226,13 +228,16 @@ export function DesignAnatomySection() {
     const syncGeometry = () => {
       const header = document.querySelector<HTMLElement>('.site-header')
       const headerHeight = header?.offsetHeight ?? 64
+      const anatomyHeaderHeight = headerRef.current?.offsetHeight ?? 0
       runway.style.setProperty('--anatomy-header-offset', `${headerHeight}px`)
+      runway.style.setProperty('--anatomy-header-height', `${anatomyHeaderHeight}px`)
       runway.style.setProperty('--anatomy-hold-height', `${sticky.offsetHeight}px`)
     }
 
     syncGeometry()
     const resizeObserver = new ResizeObserver(syncGeometry)
     resizeObserver.observe(sticky)
+    if (headerRef.current) resizeObserver.observe(headerRef.current)
     const headerEl = document.querySelector<HTMLElement>('.site-header')
     if (headerEl) resizeObserver.observe(headerEl)
 
@@ -437,10 +442,7 @@ export function DesignAnatomySection() {
       scrollProgressRef.current = targetProgress
       ensureLoopRunning()
       const destinationY = trigger.start + targetProgress * (trigger.end - trigger.start)
-      window.scrollTo({
-        top: destinationY,
-        behavior: 'smooth',
-      })
+      scrollToY(destinationY, { duration: 0.72 })
     }
 
     retryFrameRef.current = () => {
@@ -504,16 +506,6 @@ export function DesignAnatomySection() {
       className="section section-stone section-anatomy"
       aria-labelledby="anatomy-headline"
     >
-      <div className="container">
-        <div className="anatomy-header" data-reveal>
-          <p className="eyebrow">{anatomyContent.eyebrow}</p>
-          <h2 id="anatomy-headline" className="section-headline">
-            {anatomyContent.headline}
-          </h2>
-          <p className="section-intro anatomy-intro">{anatomyContent.intro}</p>
-        </div>
-      </div>
-
       <div
         ref={runwayRef}
         className="anatomy-runway"
@@ -521,53 +513,65 @@ export function DesignAnatomySection() {
         data-variant={compact ? 'mobile' : 'desktop'}
       >
         <div ref={stickyRef} className="anatomy-sticky">
-          <div className="container anatomy-stage">
-            <figure className="anatomy-figure">
-              <div className="media-frame media-frame-anatomy">
-                <img
-                  ref={posterRef}
-                  src={posterUrl}
-                  alt={anatomyContent.imageAlt}
-                  width={posterDims.width}
-                  height={posterDims.height}
-                  loading={armed ? 'eager' : 'lazy'}
-                  fetchPriority={armed ? 'high' : 'auto'}
-                  decoding="async"
-                  className="anatomy-poster"
-                />
-                <canvas
-                  ref={canvasRef}
-                  className="anatomy-canvas"
-                  aria-hidden="true"
-                  hidden
-                />
+          <div className="container anatomy-composition">
+            <div ref={headerRef} className="anatomy-header" data-reveal>
+              <div className="anatomy-header-title">
+                <p className="eyebrow">{anatomyContent.eyebrow}</p>
+                <h2 id="anatomy-headline" className="section-headline anatomy-headline">
+                  {anatomyContent.headline}
+                </h2>
               </div>
+              <p className="section-intro anatomy-intro">{anatomyContent.intro}</p>
+            </div>
 
-              <figcaption className="anatomy-stage-footer">
-                <span
-                  className="anatomy-progress-track"
-                  aria-hidden="true"
-                  hidden={!isInteractive}
-                >
-                  <span ref={progressBarRef} className="anatomy-progress-fill" />
-                </span>
+            <div className="anatomy-stage">
+              <figure className="anatomy-figure">
+                <div className="media-frame media-frame-anatomy">
+                  <img
+                    ref={posterRef}
+                    src={posterUrl}
+                    alt={anatomyContent.imageAlt}
+                    width={posterDims.width}
+                    height={posterDims.height}
+                    loading={armed ? 'eager' : 'lazy'}
+                    fetchPriority={armed ? 'high' : 'auto'}
+                    decoding="async"
+                    className="anatomy-poster"
+                  />
+                  <canvas
+                    ref={canvasRef}
+                    className="anatomy-canvas"
+                    aria-hidden="true"
+                    hidden
+                  />
+                </div>
 
-                {targetFailed ? (
-                  <div className="anatomy-recovery" role="status">
-                    <span>Frame temporarily unavailable.</span>
-                    <button
-                      type="button"
-                      className="anatomy-recovery-btn"
-                      onClick={() => retryFrameRef.current?.()}
-                    >
-                      Reload frame
-                    </button>
+                <figcaption className="anatomy-stage-footer">
+                  <div className="anatomy-progress-row" hidden={!isInteractive}>
+                    <span className="anatomy-progress-track" aria-hidden="true">
+                      <span ref={progressBarRef} className="anatomy-progress-fill" />
+                    </span>
+                    <span className="anatomy-scroll-hint" aria-hidden="true">
+                      Scroll to separate
+                    </span>
                   </div>
-                ) : null}
-              </figcaption>
-            </figure>
 
-            <div className="anatomy-inspector">
+                  {targetFailed ? (
+                    <div className="anatomy-recovery" role="status">
+                      <span>Frame temporarily unavailable.</span>
+                      <button
+                        type="button"
+                        className="anatomy-recovery-btn"
+                        onClick={() => retryFrameRef.current?.()}
+                      >
+                        Reload frame
+                      </button>
+                    </div>
+                  ) : null}
+                </figcaption>
+              </figure>
+
+              <div className="anatomy-inspector">
               <div
                 className="anatomy-layer-list"
                 role="tablist"
@@ -622,6 +626,7 @@ export function DesignAnatomySection() {
                 <h3 className="anatomy-detail-title">{activeLayer.title}</h3>
                 <p className="anatomy-detail-spec">{activeLayer.specification}</p>
                 <p className="anatomy-detail-summary">{activeLayer.summary}</p>
+              </div>
               </div>
             </div>
           </div>

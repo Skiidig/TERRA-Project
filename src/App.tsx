@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { DesignAnatomySection } from './anatomy/DesignAnatomySection'
+import { scrollToY, setupDesktopSmoothScroll } from './lib/smoothScroll'
 import {
   closingContent,
   footerContent,
@@ -21,6 +22,9 @@ export function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [headerOnDark, setHeaderOnDark] = useState(false)
+
+  // Desktop-only Lenis smooth wheel integration synchronized with GSAP ScrollTrigger
+  useEffect(() => setupDesktopSmoothScroll(), [])
 
   // Ensure direct fragment URLs (e.g. /#anatomy) align accurately after React mounts DOM & fonts settle
   useLayoutEffect(() => {
@@ -45,7 +49,7 @@ export function App() {
         Math.round(target.getBoundingClientRect().top + window.scrollY - headerHeight),
       )
       if (Math.abs(window.scrollY - targetTop) > 2) {
-        window.scrollTo({ top: targetTop, behavior: 'instant' })
+        scrollToY(targetTop, { immediate: true })
       }
       ScrollTrigger.refresh()
     }
