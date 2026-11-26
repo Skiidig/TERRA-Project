@@ -71,7 +71,19 @@ body {
   font-weight: 400;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: rgba(184, 157, 130, 0.28);
+  color: var(--color-charcoal);
+}
+
+.section-charcoal ::selection,
+.site-footer ::selection {
+  background-color: rgba(184, 157, 130, 0.34);
+  color: var(--color-on-dark);
 }
 
 h1,
@@ -366,18 +378,20 @@ section[id] {
   text-wrap: balance;
 }
 
-.section-intro {
-  max-width: 44ch;
-  font-size: clamp(0.96875rem, 1.15vw, 1.0625rem);
-  line-height: 1.65;
-  color: var(--color-ink-muted);
-}
-
 .body-copy {
   font-size: 0.96875rem;
   line-height: 1.68;
   color: var(--color-ink-muted);
   max-width: 48ch;
+  text-wrap: pretty;
+}
+
+.section-intro {
+  max-width: 44ch;
+  font-size: clamp(0.96875rem, 1.15vw, 1.0625rem);
+  line-height: 1.65;
+  color: var(--color-ink-muted);
+  text-wrap: pretty;
 }
 
 .body-stack {
@@ -575,6 +589,10 @@ section[id] {
 }
 
 /* 2. PHILOSOPHY */
+.section-philosophy {
+  border-top: 1px solid var(--color-rule);
+}
+
 .philosophy-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -589,22 +607,23 @@ section[id] {
 .metrics-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 2.25rem;
-  padding-top: 1.5rem;
+  gap: 1.25rem;
+  margin-top: clamp(2.25rem, 3.6vw, 3rem);
+  padding-block: 1.5rem 0.25rem;
   border-top: 1px solid var(--color-rule);
 }
 
 .metric-item {
   display: flex;
   flex-direction: column-reverse;
-  gap: 0.3rem;
+  gap: 0.4rem;
 }
 
 .metric-value {
-  font-size: clamp(1.0625rem, 1.5vw, 1.375rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.2rem, 1.75vw, 1.55rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
   font-variant-numeric: tabular-nums;
   color: var(--color-charcoal);
 }
@@ -612,7 +631,7 @@ section[id] {
 .metric-label {
   font-size: 0.75rem;
   line-height: 1.35;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   color: var(--color-ink-muted);
 }
 
@@ -622,11 +641,13 @@ section[id] {
   grid-template-columns: 1fr;
   gap: 1.25rem;
   align-items: end;
-  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  padding-bottom: clamp(1.5rem, 2.8vw, 2.25rem);
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: clamp(2.5rem, 4.8vw, 3.75rem);
 }
 
 .section-header-compact {
-  margin-bottom: clamp(2rem, 3.8vw, 3rem);
+  margin-bottom: clamp(2rem, 3.4vw, 2.75rem);
 }
 
 .materiality-triptych {
@@ -682,9 +703,10 @@ section[id] {
 .material-description {
   margin-top: 0.5rem;
   font-size: 0.9375rem;
-  line-height: 1.62;
+  line-height: 1.64;
   color: var(--color-ink-muted);
   max-width: 38ch;
+  text-wrap: pretty;
 }
 
 /* 4. DESIGN ANATOMY */
@@ -985,6 +1007,10 @@ section[id] {
 }
 
 /* 5. SPATIAL EXPERIENCE */
+.section-spatial {
+  padding-bottom: clamp(4.25rem, 7.5vw, 6.75rem);
+}
+
 .spatial-bleed-figure {
   width: 100%;
   margin-inline: auto;
@@ -992,63 +1018,83 @@ section[id] {
 
 .media-frame-spatial {
   width: 100%;
-  height: clamp(17rem, 58vw, 44rem);
+  height: clamp(18rem, 60vw, 46rem);
+}
+
+.media-frame-spatial .media-img {
+  object-position: center 54%;
 }
 
 .media-img-parallax {
   height: 108%;
   margin-top: -4%;
+  will-change: transform;
 }
 
 .spatial-notes {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.75rem;
-  margin-top: clamp(2rem, 4vw, 3.25rem);
-  padding-top: 1.75rem;
+  gap: 2rem;
+  margin-top: clamp(2.25rem, 4.2vw, 3.5rem);
+  padding-top: clamp(1.75rem, 3vw, 2.25rem);
   border-top: 1px solid var(--color-rule);
 }
 
 .spatial-note-title {
-  font-size: 1.0625rem;
+  font-size: clamp(1.0625rem, 1.35vw, 1.1875rem);
   font-weight: 500;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
   color: var(--color-charcoal);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.625rem;
 }
 
-/* 6. CLOSING */
+/* 6. CLOSING — Selected Approach A (Monumental Full-Bleed Twilight) */
 .section-closing {
-  padding-block: clamp(3.5rem, 6vw, 5.25rem) clamp(3rem, 5vw, 4.5rem);
+  padding-block: clamp(2.75rem, 5vw, 4.25rem) 0;
 }
 
 .closing-header {
-  max-width: 46rem;
-  margin-bottom: clamp(2rem, 3.8vw, 3rem);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.125rem;
+  align-items: end;
+  padding-bottom: clamp(1.35rem, 2.5vw, 2rem);
+  border-bottom: 1px solid var(--color-rule-dark);
+  margin-bottom: clamp(1.5rem, 2.8vw, 2.25rem);
 }
 
 .closing-headline {
   font-size: clamp(2.375rem, 5.2vw, 4.5rem);
   font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.035em;
+  line-height: 1.01;
+  letter-spacing: -0.036em;
   color: var(--color-on-dark);
   text-wrap: balance;
 }
 
 .closing-supporting {
-  margin-top: 1.125rem;
   font-family: var(--font-serif-accent);
   font-style: italic;
-  font-size: clamp(1.25rem, 1.85vw, 1.55rem);
-  line-height: 1.35;
+  font-size: clamp(1.225rem, 1.75vw, 1.525rem);
+  line-height: 1.32;
   color: var(--color-on-dark-muted);
-  max-width: 42ch;
+  max-width: 36ch;
+  text-wrap: balance;
+}
+
+.closing-figure {
+  width: 100%;
 }
 
 .media-frame-closing {
-  aspect-ratio: 16 / 9;
+  width: 100%;
+  aspect-ratio: 16 / 10;
   background-color: #1f2321;
+}
+
+.media-frame-closing .media-img {
+  object-position: center 68%;
 }
 
 /* FOOTER */
@@ -1056,7 +1102,7 @@ section[id] {
   background-color: var(--color-charcoal);
   color: var(--color-on-dark);
   border-top: 1px solid var(--color-rule-dark);
-  padding-block: clamp(2.25rem, 4.5vw, 3.75rem);
+  padding-block: clamp(2.5rem, 4.8vw, 4rem);
 }
 
 .footer-inner {
@@ -1107,14 +1153,15 @@ section[id] {
   border-top: 1px solid var(--color-rule-dark);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.125rem;
 }
 
 .footer-notice {
   font-size: 0.8125rem;
-  line-height: 1.6;
+  line-height: 1.62;
   color: var(--color-on-dark-muted);
-  max-width: 72ch;
+  max-width: 64ch;
+  text-wrap: pretty;
 }
 
 .footer-bottom-row {
@@ -1133,6 +1180,7 @@ section[id] {
 .footer-top-link {
   display: inline-flex;
   align-items: center;
+  gap: 0.625rem;
   min-height: 2.75rem;
   font-size: 0.75rem;
   font-weight: 500;
@@ -1143,9 +1191,17 @@ section[id] {
   transition: border-color 200ms ease;
 }
 
+.footer-top-link-icon {
+  transition: transform 220ms ease;
+}
+
 .footer-top-link:hover,
 .footer-top-link:focus-visible {
   border-bottom-color: var(--color-on-dark);
+}
+
+.footer-top-link:hover .footer-top-link-icon {
+  transform: translateY(-3px);
 }
 
 /* Compact mobile safety (<= 360px) */
@@ -1269,7 +1325,16 @@ section[id] {
 
   .spatial-notes {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 3.5rem;
+    gap: 0;
+  }
+
+  .spatial-note:first-child {
+    padding-right: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .spatial-note:last-child {
+    padding-left: clamp(2rem, 4vw, 3.5rem);
+    border-left: 1px solid var(--color-rule);
   }
 
   .footer-nav-list {
@@ -1343,7 +1408,12 @@ section[id] {
   }
 
   .material-study.is-offset {
-    margin-top: 2.25rem;
+    margin-top: 2.75rem;
+  }
+
+  .metric-item + .metric-item {
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--color-rule);
   }
 
   .anatomy-runway {
@@ -1377,17 +1447,27 @@ section[id] {
   }
 
   .media-frame-spatial {
-    height: clamp(28rem, 70svh, 44rem);
+    height: clamp(30rem, 74svh, 48rem);
+  }
+
+  .closing-header {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 3rem;
+  }
+
+  .closing-supporting {
+    justify-self: end;
+    text-align: right;
   }
 
   .media-frame-closing {
     aspect-ratio: auto;
-    height: clamp(26rem, 62svh, 38rem);
+    height: clamp(26rem, 64svh, 44rem);
   }
 
   .footer-inner {
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    align-items: start;
+    align-items: center;
   }
 
   .footer-nav {

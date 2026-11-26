@@ -12,8 +12,9 @@
 | V3-004B | High-fidelity responsive editorial image delivery (AVIF/WebP + mobile art direction) | Complete (approved) |
 | V3-004C | Hero super-resolution PoC & integration (`realesrgan-x4plus` 2752×1536, minor artificial sharpness noted) | Complete (approved) |
 | V3-004D | Selective editorial image super-resolution (`spatial`, `closing`, `philosophy` 60/40 blend; Materiality retained) | Complete (approved) |
-| V3-004E | Full-page editorial & motion refinement (Philosophy, Materiality, Spatial, Closing, Footer) | In progress |
-| V3-005 | Focused Design Anatomy evaluation & studio sequence refresh | Planned |
+| V3-004E | Full-page editorial & motion refinement (Philosophy, Materiality, Spatial, Closing, Footer) | Complete (owner approved, local checkpoint) |
+| V3-005A | Design Anatomy studio look development and rendering proof of concept | In progress |
+| V3-005B | Design Anatomy production sequence refresh | Pending V3-005A decision |
 | V3-006 | Final multi-viewport QA, asset cleanup, performance audit & release prep | Planned |
 
 ---

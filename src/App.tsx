@@ -256,13 +256,33 @@ export function App() {
             }
           }
 
+          // Subtle desktop-only counter-drift on the staggered center material study
+          const offsetStudy = root.querySelector<HTMLElement>('.material-study.is-offset')
+          if (offsetStudy) {
+            gsap.fromTo(
+              offsetStudy,
+              { y: 18 },
+              {
+                y: -18,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: offsetStudy.parentElement ?? offsetStudy,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: 0.6,
+                },
+              },
+            )
+          }
+
           const parallaxImages = gsap.utils.toArray<HTMLElement>('[data-parallax-img]')
           parallaxImages.forEach((img) => {
             gsap.fromTo(
               img,
-              { yPercent: -3.5 },
+              { yPercent: -3, scale: 1.03 },
               {
-                yPercent: 3.5,
+                yPercent: 3,
+                scale: 1,
                 ease: 'none',
                 scrollTrigger: {
                   trigger: img.parentElement ?? img,
@@ -622,36 +642,38 @@ export function App() {
         >
           <div className="container">
             <div className="closing-header" data-reveal>
-              <p className="eyebrow eyebrow-on-dark">{closingContent.eyebrow}</p>
-              <h2 id="closing-headline" className="closing-headline">
-                {closingContent.headline}
-              </h2>
+              <div className="closing-title-block">
+                <p className="eyebrow eyebrow-on-dark">{closingContent.eyebrow}</p>
+                <h2 id="closing-headline" className="closing-headline">
+                  {closingContent.headline}
+                </h2>
+              </div>
               <p className="closing-supporting">{closingContent.supportingLine}</p>
             </div>
-
-            <figure className="closing-figure">
-              <div className="media-frame media-frame-closing" data-media-reveal>
-                <picture className="media-picture">
-                  <source
-                    type="image/avif"
-                    srcSet={closingContent.imageAvifSrcSet}
-                    sizes="(max-width: 767px) 94vw, (max-width: 1440px) 91vw, 1376px"
-                  />
-                  <img
-                    src={closingContent.image}
-                    srcSet={closingContent.imageSrcSet}
-                    sizes="(max-width: 767px) 94vw, (max-width: 1440px) 91vw, 1376px"
-                    alt={closingContent.imageAlt}
-                    width={closingContent.width}
-                    height={closingContent.height}
-                    loading="lazy"
-                    decoding="async"
-                    className="media-img"
-                  />
-                </picture>
-              </div>
-            </figure>
           </div>
+
+          <figure className="closing-figure">
+            <div className="media-frame media-frame-closing" data-media-reveal>
+              <picture className="media-picture">
+                <source
+                  type="image/avif"
+                  srcSet={closingContent.imageAvifSrcSet}
+                  sizes="100vw"
+                />
+                <img
+                  src={closingContent.image}
+                  srcSet={closingContent.imageSrcSet}
+                  sizes="100vw"
+                  alt={closingContent.imageAlt}
+                  width={closingContent.width}
+                  height={closingContent.height}
+                  loading="lazy"
+                  decoding="async"
+                  className="media-img"
+                />
+              </picture>
+            </div>
+          </figure>
         </section>
       </main>
 
@@ -679,7 +701,22 @@ export function App() {
             <div className="footer-bottom-row">
               <p className="footer-colophon">{footerContent.colophon}</p>
               <a className="footer-top-link" href="#top">
-                {closingContent.ctaLabel}
+                <span>{closingContent.ctaLabel}</span>
+                <svg
+                  className="footer-top-link-icon"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M7 11.75V2.25M7 2.25L2.75 6.5M7 2.25L11.25 6.5"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinecap="square"
+                  />
+                </svg>
               </a>
             </div>
           </div>

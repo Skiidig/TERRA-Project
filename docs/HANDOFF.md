@@ -1,5 +1,11 @@
 # Handoff
 
+## TERRA V3 · V3-004E editorial composition and motion (approved local checkpoint)
+
+The owner approved the desktop and mobile editorial direction after reviewing the V3-004E screenshots. The approved update refines Philosophy's metrics, adds restrained desktop drift to Materiality, adjusts the Spatial image and notes, and gives Closing a full-width twilight image and a quieter transition into the footer. The Hero, photography, typography, and editorial direction are approved. Design Anatomy moves to a separate V3-005A studio proof.
+
+Verified the approved diff and passed `npm run typecheck`, `npm run lint`, `npm run build`, and `git diff --check` on `experiment/terra-v3-cinematic`. The checkpoint builds on `6d6c518`. The remote V3 branch is `1a7359c`, local `main` is `bfe2c91`, and production `origin/main` is `bead7ef`.
+
 ## TERRA V3 · V3-004D selective editorial image super-resolution (approved local checkpoint)
 
 Completed and received owner visual approval for selective editorial photography super-resolution on `experiment/terra-v3-cinematic` (building on `8aed2f8`). Prioritized natural photographic fidelity over maximum sharpness (zero unsharp masking, `60% SR / 40% Original` blending) using the existing external portable `realesrgan-ncnn-vulkan` `v0.2.5.0` (`realesrgan-x4plus`, RTX 4060 Vulkan, `50.30 s` total across 6 masters). Accepted Hero (`hero-v3c-*`), Design Anatomy, layout, typography, CSS, GSAP choreography, Blender assets, and all rollback assets remain untouched.
